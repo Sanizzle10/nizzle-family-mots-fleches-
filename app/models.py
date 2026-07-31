@@ -16,3 +16,5 @@ class Placement:
     row: int
     col: int
     horizontal: bool
+    clue_row: int
+    clue_col: int

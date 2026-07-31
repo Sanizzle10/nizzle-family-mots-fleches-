@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 import sys
+from collections import defaultdict
 
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QRectF
 from PySide6.QtGui import QColor, QFont, QPainter, QPen
 from PySide6.QtWidgets import (
     QApplication,
@@ -20,33 +21,52 @@ from PySide6.QtWidgets import (
 )
 
 from app.excel_loader import load_dictionary
-from app.generator import GridGenerator
+from app.generator import CLUE_CELL, GridGenerator
+from app.models import Placement
 
 
 class GridWidget(QWidget):
     def __init__(self) -> None:
         super().__init__()
         self.grid: list[list[str | None]] = []
+        self.placements: list[Placement] = []
         self.show_answers = True
         self.setMinimumSize(600, 600)
 
-    def set_grid(self, grid: list[list[str | None]]) -> None:
+    def set_grid(
+        self,
+        grid: list[list[str | None]],
+        placements: list[Placement] | None = None,
+    ) -> None:
         self.grid = grid
+        self.placements = placements or []
         self.update()
 
     def paintEvent(self, event) -> None:
         painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)
         painter.fillRect(self.rect(), QColor("#F4F6FA"))
 
         if not self.grid:
             painter.setPen(QColor("#6B7280"))
             painter.setFont(QFont("Segoe UI", 14))
-            painter.drawText(self.rect(), Qt.AlignCenter, "Importez un fichier Excel puis générez une grille")
+            painter.drawText(
+                self.rect(),
+                Qt.AlignCenter,
+                "Importez un fichier Excel puis générez une grille",
+            )
             return
+
+        clue_map: dict[tuple[int, int], list[Placement]] = defaultdict(list)
+        for placement in self.placements:
+            clue_map[(placement.clue_row, placement.clue_col)].append(placement)
 
         size = len(self.grid)
         margin = 24
-        cell = min((self.width() - 2 * margin) / size, (self.height() - 2 * margin) / size)
+        cell = min(
+            (self.width() - 2 * margin) / size,
+            (self.height() - 2 * margin) / size,
+        )
         total = cell * size
         left = (self.width() - total) / 2
         top = (self.height() - total) / 2
@@ -55,23 +75,69 @@ class GridWidget(QWidget):
             for col in range(size):
                 x = left + col * cell
                 y = top + row * cell
+                rect = QRectF(x, y, cell, cell)
                 value = self.grid[row][col]
+
+                if value == CLUE_CELL:
+                    painter.setPen(QPen(QColor("#E85D75"), 1))
+                    painter.setBrush(QColor("#FFF1F4"))
+                    painter.drawRect(rect)
+                    self._draw_definition(
+                        painter,
+                        rect,
+                        clue_map.get((row, col), []),
+                        cell,
+                    )
+                    continue
 
                 painter.setPen(QPen(QColor("#D7DCE5"), 1))
                 painter.setBrush(QColor("#FFFFFF") if value else QColor("#20242B"))
-                painter.drawRect(x, y, cell, cell)
+                painter.drawRect(rect)
 
                 if value and self.show_answers:
                     painter.setPen(QColor("#17191F"))
-                    painter.setFont(QFont("Segoe UI", max(8, int(cell * 0.38)), QFont.Bold))
-                    painter.drawText(x, y, cell, cell, Qt.AlignCenter, value)
+                    painter.setFont(
+                        QFont(
+                            "Segoe UI",
+                            max(8, int(cell * 0.38)),
+                            QFont.Bold,
+                        )
+                    )
+                    painter.drawText(rect, Qt.AlignCenter, value)
+
+    def _draw_definition(
+        self,
+        painter: QPainter,
+        rect: QRectF,
+        placements: list[Placement],
+        cell: float,
+    ) -> None:
+        if not placements:
+            return
+
+        lines = []
+        for placement in placements[:2]:
+            arrow = "→" if placement.horizontal else "↓"
+            lines.append(f"{placement.definition} {arrow}")
+
+        painter.save()
+        painter.setPen(QColor("#A32145"))
+        font = QFont("Segoe UI")
+        font.setPixelSize(max(4, int(cell * 0.12)))
+        painter.setFont(font)
+        painter.drawText(
+            rect.adjusted(1.5, 1.5, -1.5, -1.5),
+            Qt.TextWordWrap | Qt.AlignCenter,
+            "\n".join(lines),
+        )
+        painter.restore()
 
 
 class MainWindow(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
         self.entries = []
-        self.placements = []
+        self.placements: list[Placement] = []
 
         self.setWindowTitle("Mots Fléchés Studio")
         self.resize(1320, 820)
@@ -132,9 +198,15 @@ class MainWindow(QMainWindow):
         )
 
     def import_excel(self) -> None:
-        path, _ = QFileDialog.getOpenFileName(self, "Importer un dictionnaire", "", "Excel (*.xlsx)")
+        path, _ = QFileDialog.getOpenFileName(
+            self,
+            "Importer un dictionnaire",
+            "",
+            "Excel (*.xlsx)",
+        )
         if not path:
             return
+
         try:
             self.entries = load_dictionary(path)
         except Exception as exc:
@@ -150,19 +222,33 @@ class MainWindow(QMainWindow):
 
     def generate(self) -> None:
         if not self.entries:
-            QMessageBox.information(self, "Dictionnaire requis", "Importez d'abord un fichier Excel.")
+            QMessageBox.information(
+                self,
+                "Dictionnaire requis",
+                "Importez d'abord un fichier Excel.",
+            )
             return
 
         generator = GridGenerator(size=self.size_spin.value(), seconds=5.0)
         grid, self.placements = generator.generate(self.entries)
-        self.grid_widget.set_grid(grid)
+        self.grid_widget.set_grid(grid, self.placements)
 
         self.words_list.clear()
         for entry in self.entries:
             self.words_list.addItem(f"{'✓' if entry.placed else '•'}  {entry.word}")
 
+        self.definitions_list.clear()
+        for placement in sorted(
+            self.placements,
+            key=lambda item: (item.clue_row, item.clue_col, not item.horizontal),
+        ):
+            arrow = "→" if placement.horizontal else "↓"
+            self.definitions_list.addItem(f"{arrow}  {placement.definition}")
+
         placed = sum(entry.placed for entry in self.entries)
-        self.statusBar().showMessage(f"{placed} mots placés sur {len(self.entries)}")
+        self.statusBar().showMessage(
+            f"{placed} mots placés sur {len(self.entries)}"
+        )
 
     def toggle_answers(self) -> None:
         self.grid_widget.show_answers = not self.grid_widget.show_answers

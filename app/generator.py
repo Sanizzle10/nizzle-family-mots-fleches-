@@ -14,7 +14,10 @@ class GridGenerator:
         self.size = size
         self.seconds = seconds
 
-    def generate(self, entries: list[WordEntry]) -> tuple[list[list[str | None]], list[Placement]]:
+    def generate(
+        self,
+        entries: list[WordEntry],
+    ) -> tuple[list[list[str | None]], list[Placement]]:
         usable = [entry for entry in entries if len(entry.word) <= self.size - 1]
         deadline = time.time() + self.seconds
         best_grid = [[None for _ in range(self.size)] for _ in range(self.size)]
@@ -23,32 +26,65 @@ class GridGenerator:
         while time.time() < deadline:
             grid = [[None for _ in range(self.size)] for _ in range(self.size)]
             placements: list[Placement] = []
-            pool = usable[:]
-            random.shuffle(pool)
-            pool.sort(key=lambda entry: (len(entry.word), random.random()), reverse=True)
+            remaining = usable[:]
+            random.shuffle(remaining)
+            remaining.sort(
+                key=lambda entry: (len(entry.word), random.random()),
+                reverse=True,
+            )
 
-            for entry in pool:
-                candidate = self._find_candidate(grid, placements, entry.word)
-                if candidate is None:
-                    continue
+            # Plusieurs passages : un mot refusé au début peut devenir plaçable
+            # après l'ajout d'autres mots.
+            while remaining and time.time() < deadline:
+                added_this_pass = 0
+                next_remaining: list[WordEntry] = []
 
-                row, col, horizontal = candidate
-                clue_row, clue_col = self._place(grid, entry.word, row, col, horizontal)
-                placements.append(
-                    Placement(
+                for entry in remaining:
+                    candidate = self._find_candidate(
+                        grid,
+                        placements,
                         entry.word,
-                        entry.definition,
+                    )
+                    if candidate is None:
+                        next_remaining.append(entry)
+                        continue
+
+                    row, col, horizontal = candidate
+                    clue_row, clue_col = self._place(
+                        grid,
+                        entry.word,
                         row,
                         col,
                         horizontal,
-                        clue_row,
-                        clue_col,
                     )
-                )
+                    placements.append(
+                        Placement(
+                            entry.word,
+                            entry.definition,
+                            row,
+                            col,
+                            horizontal,
+                            clue_row,
+                            clue_col,
+                        )
+                    )
+                    added_this_pass += 1
 
-            if self._score(grid, placements) > self._score(best_grid, best_placements):
+                if added_this_pass == 0:
+                    break
+
+                remaining = next_remaining
+                random.shuffle(remaining)
+
+            if self._score(grid, placements) > self._score(
+                best_grid,
+                best_placements,
+            ):
                 best_grid = [row[:] for row in grid]
                 best_placements = placements[:]
+
+            if len(best_placements) == len(usable):
+                break
 
         placed_words = {placement.word for placement in best_placements}
         for entry in entries:
@@ -67,11 +103,18 @@ class GridGenerator:
                     else:
                         row = max(1, (self.size - len(word)) // 2)
                         col = self.size // 2 + shift
-                    if self._can_place(grid, word, row, col, horizontal):
+                    if self._can_place(
+                        grid,
+                        word,
+                        row,
+                        col,
+                        horizontal,
+                        require_crossing=False,
+                    ):
                         starts.append((row, col, horizontal))
             return random.choice(starts) if starts else None
 
-        candidates = []
+        crossing_candidates = []
         for r in range(self.size):
             for c in range(self.size):
                 existing = grid[r][c]
@@ -85,20 +128,69 @@ class GridGenerator:
                     for horizontal in (True, False):
                         row = r if horizontal else r - index
                         col = c - index if horizontal else c
-                        if self._can_place(grid, word, row, col, horizontal):
-                            candidates.append((row, col, horizontal))
+                        if self._can_place(
+                            grid,
+                            word,
+                            row,
+                            col,
+                            horizontal,
+                            require_crossing=True,
+                        ):
+                            crossing_candidates.append(
+                                (row, col, horizontal)
+                            )
 
-        if not candidates:
+        crossing_candidates = list(dict.fromkeys(crossing_candidates))
+        if crossing_candidates:
+            crossing_candidates.sort(
+                key=lambda item: self._candidate_score(
+                    grid,
+                    word,
+                    *item,
+                ),
+                reverse=True,
+            )
+            return random.choice(
+                crossing_candidates[: min(8, len(crossing_candidates))]
+            )
+
+        # Aucun croisement disponible : on utilise une zone vide proche de la
+        # grille existante au lieu d'abandonner le mot.
+        free_candidates = []
+        for horizontal in (True, False):
+            max_row = self.size if horizontal else self.size - len(word) + 1
+            max_col = self.size - len(word) + 1 if horizontal else self.size
+
+            for row in range(max_row):
+                for col in range(max_col):
+                    if self._can_place(
+                        grid,
+                        word,
+                        row,
+                        col,
+                        horizontal,
+                        require_crossing=False,
+                    ):
+                        free_candidates.append((row, col, horizontal))
+
+        if not free_candidates:
             return None
 
-        candidates = list(dict.fromkeys(candidates))
-        candidates.sort(
+        free_candidates.sort(
             key=lambda item: self._candidate_score(grid, word, *item),
             reverse=True,
         )
-        return random.choice(candidates[: min(8, len(candidates))])
+        return random.choice(free_candidates[: min(12, len(free_candidates))])
 
-    def _can_place(self, grid, word, row, col, horizontal):
+    def _can_place(
+        self,
+        grid,
+        word,
+        row,
+        col,
+        horizontal,
+        require_crossing: bool,
+    ):
         dr, dc = (0, 1) if horizontal else (1, 0)
         clue_row = row - dr
         clue_col = col - dc
@@ -134,13 +226,19 @@ class GridGenerator:
             elif horizontal:
                 if (
                     (r > 0 and grid[r - 1][c] not in (None, CLUE_CELL))
-                    or (r + 1 < self.size and grid[r + 1][c] not in (None, CLUE_CELL))
+                    or (
+                        r + 1 < self.size
+                        and grid[r + 1][c] not in (None, CLUE_CELL)
+                    )
                 ):
                     return False
             else:
                 if (
                     (c > 0 and grid[r][c - 1] not in (None, CLUE_CELL))
-                    or (c + 1 < self.size and grid[r][c + 1] not in (None, CLUE_CELL))
+                    or (
+                        c + 1 < self.size
+                        and grid[r][c + 1] not in (None, CLUE_CELL)
+                    )
                 ):
                     return False
 
@@ -153,7 +251,10 @@ class GridGenerator:
         ):
             return False
 
-        return not placements_exist(grid) or crossings > 0
+        if require_crossing and crossings == 0:
+            return False
+
+        return True
 
     def _place(self, grid, word, row, col, horizontal):
         dr, dc = (0, 1) if horizontal else (1, 0)
@@ -191,7 +292,14 @@ class GridGenerator:
         max_c = max(c for _, c in points)
         area = (max_r - min_r + 1) * (max_c - min_c + 1)
 
-        return crossings * 500 - area * 3
+        center = (self.size - 1) / 2
+        word_center_r = row + ((len(word) - 1) * dr) / 2
+        word_center_c = col + ((len(word) - 1) * dc) / 2
+        center_distance = abs(word_center_r - center) + abs(
+            word_center_c - center
+        )
+
+        return crossings * 10000 - area * 12 - center_distance * 8
 
     def _score(self, grid, placements):
         occupied = [
@@ -212,12 +320,8 @@ class GridGenerator:
         density = len(occupied) / area
 
         return (
-            len(placements) * 100000
-            + density * 10000
-            - empty_inside * 120
-            - area * 8
+            len(placements) * 1_000_000
+            + density * 20_000
+            - empty_inside * 180
+            - area * 10
         )
-
-
-def placements_exist(grid) -> bool:
-    return any(cell not in (None, CLUE_CELL) for row in grid for cell in row)

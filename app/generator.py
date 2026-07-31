@@ -25,7 +25,7 @@ class GridGenerator:
             placements: list[Placement] = []
             pool = usable[:]
             random.shuffle(pool)
-            pool.sort(key=lambda entry: len(entry.word), reverse=True)
+            pool.sort(key=lambda entry: (len(entry.word), random.random()), reverse=True)
 
             for entry in pool:
                 candidate = self._find_candidate(grid, placements, entry.word)
@@ -47,8 +47,8 @@ class GridGenerator:
                 )
 
             if self._score(grid, placements) > self._score(best_grid, best_placements):
-                best_grid = grid
-                best_placements = placements
+                best_grid = [row[:] for row in grid]
+                best_placements = placements[:]
 
         placed_words = {placement.word for placement in best_placements}
         for entry in entries:
@@ -58,9 +58,18 @@ class GridGenerator:
 
     def _find_candidate(self, grid, placements, word):
         if not placements:
-            row = self.size // 2
-            col = max(1, (self.size - len(word)) // 2)
-            return (row, col, True) if self._can_place(grid, word, row, col, True) else None
+            starts = []
+            for horizontal in (True, False):
+                for shift in (-2, -1, 0, 1, 2):
+                    if horizontal:
+                        row = self.size // 2 + shift
+                        col = max(1, (self.size - len(word)) // 2)
+                    else:
+                        row = max(1, (self.size - len(word)) // 2)
+                        col = self.size // 2 + shift
+                    if self._can_place(grid, word, row, col, horizontal):
+                        starts.append((row, col, horizontal))
+            return random.choice(starts) if starts else None
 
         candidates = []
         for r in range(self.size):
@@ -82,8 +91,12 @@ class GridGenerator:
         if not candidates:
             return None
 
-        candidates.sort(key=lambda item: self._candidate_score(grid, word, *item), reverse=True)
-        return random.choice(candidates[: min(4, len(candidates))])
+        candidates = list(dict.fromkeys(candidates))
+        candidates.sort(
+            key=lambda item: self._candidate_score(grid, word, *item),
+            reverse=True,
+        )
+        return random.choice(candidates[: min(8, len(candidates))])
 
     def _can_place(self, grid, word, row, col, horizontal):
         dr, dc = (0, 1) if horizontal else (1, 0)
@@ -160,16 +173,32 @@ class GridGenerator:
             for index, letter in enumerate(word)
             if grid[row + index * dr][col + index * dc] == letter
         )
-        center = self.size / 2
-        distance = abs(row - center) + abs(col - center)
-        return crossings * 100 - distance
+
+        occupied = [
+            (r, c)
+            for r in range(self.size)
+            for c in range(self.size)
+            if grid[r][c] is not None
+        ]
+        added = [(row - dr, col - dc)] + [
+            (row + index * dr, col + index * dc)
+            for index in range(len(word))
+        ]
+        points = occupied + added
+        min_r = min(r for r, _ in points)
+        max_r = max(r for r, _ in points)
+        min_c = min(c for _, c in points)
+        max_c = max(c for _, c in points)
+        area = (max_r - min_r + 1) * (max_c - min_c + 1)
+
+        return crossings * 500 - area * 3
 
     def _score(self, grid, placements):
         occupied = [
             (r, c)
             for r in range(self.size)
             for c in range(self.size)
-            if grid[r][c]
+            if grid[r][c] is not None
         ]
         if not occupied:
             return -1
@@ -179,8 +208,15 @@ class GridGenerator:
         min_c = min(c for _, c in occupied)
         max_c = max(c for _, c in occupied)
         area = (max_r - min_r + 1) * (max_c - min_c + 1)
+        empty_inside = area - len(occupied)
         density = len(occupied) / area
-        return len(placements) * 1000 + density * 100 - area
+
+        return (
+            len(placements) * 100000
+            + density * 10000
+            - empty_inside * 120
+            - area * 8
+        )
 
 
 def placements_exist(grid) -> bool:

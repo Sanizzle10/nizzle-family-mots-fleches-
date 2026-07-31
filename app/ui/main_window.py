@@ -2,14 +2,16 @@ from __future__ import annotations
 
 import sys
 from collections import defaultdict
+from pathlib import Path
 
 from PySide6.QtCore import Qt, QRectF
-from PySide6.QtGui import QColor, QFont, QPainter, QPen
+from PySide6.QtGui import QColor, QFont, QFontMetricsF, QImage, QPainter, QPen, QPixmap
 from PySide6.QtWidgets import (
     QApplication,
     QFileDialog,
     QHBoxLayout,
     QLabel,
+    QLineEdit,
     QListWidget,
     QMainWindow,
     QMessageBox,
@@ -23,6 +25,7 @@ from PySide6.QtWidgets import (
 from app.excel_loader import load_dictionary
 from app.generator import CLUE_CELL, GridGenerator
 from app.models import Placement
+from app.pdf_exporter import export_book_pdf
 
 
 class GridWidget(QWidget):
@@ -42,113 +45,118 @@ class GridWidget(QWidget):
         self.placements = placements or []
         self.update()
 
-    def clue_numbers(self) -> dict[tuple[int, int], int]:
-        cells = sorted({(p.clue_row, p.clue_col) for p in self.placements})
-        return {cell: index + 1 for index, cell in enumerate(cells)}
-
     def paintEvent(self, event) -> None:
         painter = QPainter(self)
+        self.render_grid(painter, QRectF(self.rect()), self.show_answers)
+
+    def render_grid(
+        self,
+        painter: QPainter,
+        target: QRectF,
+        show_answers: bool,
+    ) -> None:
+        painter.save()
         painter.setRenderHint(QPainter.Antialiasing)
-        painter.fillRect(self.rect(), QColor("#F4F6FA"))
+        painter.fillRect(target, QColor("#F4F6FA"))
 
         if not self.grid:
             painter.setPen(QColor("#6B7280"))
             painter.setFont(QFont("Segoe UI", 14))
             painter.drawText(
-                self.rect(),
+                target,
                 Qt.AlignCenter,
                 "Importez un fichier Excel puis générez une grille",
             )
+            painter.restore()
             return
 
         clue_map: dict[tuple[int, int], list[Placement]] = defaultdict(list)
         for placement in self.placements:
             clue_map[(placement.clue_row, placement.clue_col)].append(placement)
-        numbers = self.clue_numbers()
 
         size = len(self.grid)
-        margin = 24
+        margin = 18
         cell = min(
-            (self.width() - 2 * margin) / size,
-            (self.height() - 2 * margin) / size,
+            (target.width() - 2 * margin) / size,
+            (target.height() - 2 * margin) / size,
         )
         total = cell * size
-        left = (self.width() - total) / 2
-        top = (self.height() - total) / 2
+        left = target.x() + (target.width() - total) / 2
+        top = target.y() + (target.height() - total) / 2
 
         for row in range(size):
             for col in range(size):
-                x = left + col * cell
-                y = top + row * cell
-                rect = QRectF(x, y, cell, cell)
+                rect = QRectF(left + col * cell, top + row * cell, cell, cell)
                 value = self.grid[row][col]
 
                 if value == CLUE_CELL:
-                    painter.setPen(QPen(QColor("#E85D75"), 1))
-                    painter.setBrush(QColor("#FFF1F4"))
+                    painter.setPen(QPen(QColor("#EF3340"), 1.2))
+                    painter.setBrush(QColor("#FFE8E8"))
                     painter.drawRect(rect)
-                    self._draw_clue(
+                    self._draw_definition(
                         painter,
                         rect,
                         clue_map.get((row, col), []),
-                        numbers.get((row, col), 0),
                         cell,
                     )
                     continue
 
-                painter.setPen(QPen(QColor("#D7DCE5"), 1))
-                painter.setBrush(QColor("#FFFFFF") if value else QColor("#20242B"))
+                painter.setPen(QPen(QColor("#15317E"), 1.1))
+                painter.setBrush(QColor("#FFFFFF") if value else QColor("#FFFFFF"))
                 painter.drawRect(rect)
 
-                if value and self.show_answers:
+                if value and show_answers:
                     painter.setPen(QColor("#17191F"))
                     painter.setFont(
-                        QFont(
-                            "Segoe UI",
-                            max(8, int(cell * 0.38)),
-                            QFont.Bold,
-                        )
+                        QFont("Segoe UI", max(8, int(cell * 0.38)), QFont.Bold)
                     )
                     painter.drawText(rect, Qt.AlignCenter, value)
 
-    def _draw_clue(
+        painter.restore()
+
+    def _draw_definition(
         self,
         painter: QPainter,
         rect: QRectF,
         placements: list[Placement],
-        number: int,
         cell: float,
     ) -> None:
         if not placements:
             return
 
-        directions = ""
-        if any(item.horizontal for item in placements):
-            directions += "→"
-        if any(not item.horizontal for item in placements):
-            directions += "↓"
+        parts = []
+        for placement in placements[:2]:
+            arrow = "→" if placement.horizontal else "↓"
+            parts.append(f"{placement.definition}\n{arrow}")
+        text = "\n".join(parts)
 
         painter.save()
-        painter.setPen(QColor("#A32145"))
+        painter.setPen(QColor("#D71920"))
 
-        number_font = QFont("Segoe UI")
-        number_font.setBold(True)
-        number_font.setPixelSize(max(7, int(cell * 0.25)))
-        painter.setFont(number_font)
-        painter.drawText(
-            rect.adjusted(2, 1, -2, -2),
-            Qt.AlignTop | Qt.AlignLeft,
-            str(number),
-        )
+        pixel_size = max(5, int(cell * 0.16))
+        font = QFont("Segoe UI")
+        font.setBold(True)
+        font.setPixelSize(pixel_size)
+        painter.setFont(font)
 
-        arrow_font = QFont("Segoe UI")
-        arrow_font.setBold(True)
-        arrow_font.setPixelSize(max(8, int(cell * 0.32)))
-        painter.setFont(arrow_font)
+        available = rect.adjusted(1.5, 1.5, -1.5, -1.5)
+        while pixel_size > 4:
+            metrics = QFontMetricsF(font)
+            bounds = metrics.boundingRect(
+                available,
+                Qt.TextWordWrap | Qt.AlignCenter,
+                text,
+            )
+            if bounds.height() <= available.height():
+                break
+            pixel_size -= 1
+            font.setPixelSize(pixel_size)
+            painter.setFont(font)
+
         painter.drawText(
-            rect.adjusted(2, 2, -2, -2),
-            Qt.AlignBottom | Qt.AlignRight,
-            directions,
+            available,
+            Qt.TextWordWrap | Qt.AlignCenter,
+            text,
         )
         painter.restore()
 
@@ -158,9 +166,10 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.entries = []
         self.placements: list[Placement] = []
+        self.illustration_path = ""
 
         self.setWindowTitle("Mots Fléchés Studio")
-        self.resize(1320, 820)
+        self.resize(1380, 860)
 
         central = QWidget()
         self.setCentralWidget(central)
@@ -168,10 +177,14 @@ class MainWindow(QMainWindow):
         root.setContentsMargins(18, 18, 18, 18)
 
         header = QHBoxLayout()
-        title = QLabel("Mots Fléchés Studio")
-        title.setStyleSheet("font-size:26px;font-weight:700;")
-        header.addWidget(title)
+        self.title_edit = QLineEdit("Mots Fléchés Studio")
+        self.title_edit.setMinimumWidth(260)
+        header.addWidget(self.title_edit)
         header.addStretch()
+
+        image_button = QPushButton("Ajouter illustration")
+        image_button.clicked.connect(self.choose_illustration)
+        header.addWidget(image_button)
 
         import_button = QPushButton("Importer Excel")
         import_button.clicked.connect(self.import_excel)
@@ -189,22 +202,34 @@ class MainWindow(QMainWindow):
         toggle_button = QPushButton("Afficher / masquer réponses")
         toggle_button.clicked.connect(self.toggle_answers)
         header.addWidget(toggle_button)
+
+        pdf_button = QPushButton("Télécharger PDF")
+        pdf_button.clicked.connect(self.export_pdf)
+        header.addWidget(pdf_button)
         root.addLayout(header)
+
+        self.illustration_preview = QLabel("Aucune illustration")
+        self.illustration_preview.setAlignment(Qt.AlignCenter)
+        self.illustration_preview.setMaximumHeight(110)
+        self.illustration_preview.setStyleSheet(
+            "background:white;border:1px dashed #BFC5D2;border-radius:12px;color:#6B7280;"
+        )
+        root.addWidget(self.illustration_preview)
 
         splitter = QSplitter(Qt.Horizontal)
 
         self.words_list = QListWidget()
-        self.words_list.setMinimumWidth(260)
+        self.words_list.setMinimumWidth(250)
         splitter.addWidget(self.words_list)
 
         self.grid_widget = GridWidget()
         splitter.addWidget(self.grid_widget)
 
         self.definitions_list = QListWidget()
-        self.definitions_list.setMinimumWidth(340)
+        self.definitions_list.setMinimumWidth(350)
         splitter.addWidget(self.definitions_list)
 
-        splitter.setSizes([260, 720, 360])
+        splitter.setSizes([250, 760, 370])
         root.addWidget(splitter, 1)
 
         self.setStyleSheet(
@@ -214,9 +239,32 @@ class MainWindow(QMainWindow):
             QListWidget::item { padding:5px 3px; }
             QPushButton { background:#5B5BD6; color:white; border:none; border-radius:9px; padding:9px 14px; font-weight:600; }
             QPushButton:hover { background:#4949BF; }
-            QSpinBox { background:white; border:1px solid #D6DAE3; border-radius:8px; padding:7px; }
+            QSpinBox, QLineEdit { background:white; border:1px solid #D6DAE3; border-radius:8px; padding:7px; }
             """
         )
+
+    def choose_illustration(self) -> None:
+        path, _ = QFileDialog.getOpenFileName(
+            self,
+            "Choisir une illustration",
+            "",
+            "Images (*.png *.jpg *.jpeg *.webp)",
+        )
+        if not path:
+            return
+
+        self.illustration_path = path
+        pixmap = QPixmap(path)
+        if not pixmap.isNull():
+            self.illustration_preview.setPixmap(
+                pixmap.scaled(
+                    900,
+                    100,
+                    Qt.KeepAspectRatio,
+                    Qt.SmoothTransformation,
+                )
+            )
+            self.illustration_preview.setText("")
 
     def import_excel(self) -> None:
         path, _ = QFileDialog.getOpenFileName(
@@ -250,25 +298,26 @@ class MainWindow(QMainWindow):
             )
             return
 
-        generator = GridGenerator(size=self.size_spin.value(), seconds=8.0)
-        grid, self.placements = generator.generate(self.entries)
+        QApplication.setOverrideCursor(Qt.WaitCursor)
+        try:
+            generator = GridGenerator(size=self.size_spin.value(), seconds=12.0)
+            grid, self.placements = generator.generate(self.entries)
+        finally:
+            QApplication.restoreOverrideCursor()
+
         self.grid_widget.set_grid(grid, self.placements)
 
         self.words_list.clear()
         for entry in self.entries:
             self.words_list.addItem(f"{'✓' if entry.placed else '•'}  {entry.word}")
 
-        numbers = self.grid_widget.clue_numbers()
         self.definitions_list.clear()
         for placement in sorted(
             self.placements,
-            key=lambda item: (numbers[(item.clue_row, item.clue_col)], not item.horizontal),
+            key=lambda item: (item.clue_row, item.clue_col, not item.horizontal),
         ):
-            number = numbers[(placement.clue_row, placement.clue_col)]
             arrow = "→" if placement.horizontal else "↓"
-            self.definitions_list.addItem(
-                f"{number} {arrow}  {placement.definition}"
-            )
+            self.definitions_list.addItem(f"{arrow}  {placement.definition}")
 
         placed = sum(entry.placed for entry in self.entries)
         self.statusBar().showMessage(
@@ -278,6 +327,34 @@ class MainWindow(QMainWindow):
     def toggle_answers(self) -> None:
         self.grid_widget.show_answers = not self.grid_widget.show_answers
         self.grid_widget.update()
+
+    def export_pdf(self) -> None:
+        if not self.grid_widget.grid or not self.placements:
+            QMessageBox.information(
+                self,
+                "Grille requise",
+                "Générez d'abord une grille.",
+            )
+            return
+
+        path, _ = QFileDialog.getSaveFileName(
+            self,
+            "Enregistrer le PDF",
+            f"{self.title_edit.text().strip() or 'mots-fleches'}.pdf",
+            "PDF (*.pdf)",
+        )
+        if not path:
+            return
+        if not path.lower().endswith(".pdf"):
+            path += ".pdf"
+
+        export_book_pdf(
+            path,
+            self.title_edit.text().strip(),
+            self.grid_widget,
+            self.illustration_path,
+        )
+        self.statusBar().showMessage(f"PDF enregistré : {path}")
 
 
 def run_app() -> None:

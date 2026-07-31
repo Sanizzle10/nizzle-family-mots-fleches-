@@ -42,6 +42,10 @@ class GridWidget(QWidget):
         self.placements = placements or []
         self.update()
 
+    def clue_numbers(self) -> dict[tuple[int, int], int]:
+        cells = sorted({(p.clue_row, p.clue_col) for p in self.placements})
+        return {cell: index + 1 for index, cell in enumerate(cells)}
+
     def paintEvent(self, event) -> None:
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
@@ -60,6 +64,7 @@ class GridWidget(QWidget):
         clue_map: dict[tuple[int, int], list[Placement]] = defaultdict(list)
         for placement in self.placements:
             clue_map[(placement.clue_row, placement.clue_col)].append(placement)
+        numbers = self.clue_numbers()
 
         size = len(self.grid)
         margin = 24
@@ -82,10 +87,11 @@ class GridWidget(QWidget):
                     painter.setPen(QPen(QColor("#E85D75"), 1))
                     painter.setBrush(QColor("#FFF1F4"))
                     painter.drawRect(rect)
-                    self._draw_definition(
+                    self._draw_clue(
                         painter,
                         rect,
                         clue_map.get((row, col), []),
+                        numbers.get((row, col), 0),
                         cell,
                     )
                     continue
@@ -105,30 +111,44 @@ class GridWidget(QWidget):
                     )
                     painter.drawText(rect, Qt.AlignCenter, value)
 
-    def _draw_definition(
+    def _draw_clue(
         self,
         painter: QPainter,
         rect: QRectF,
         placements: list[Placement],
+        number: int,
         cell: float,
     ) -> None:
         if not placements:
             return
 
-        lines = []
-        for placement in placements[:2]:
-            arrow = "→" if placement.horizontal else "↓"
-            lines.append(f"{placement.definition} {arrow}")
+        directions = ""
+        if any(item.horizontal for item in placements):
+            directions += "→"
+        if any(not item.horizontal for item in placements):
+            directions += "↓"
 
         painter.save()
         painter.setPen(QColor("#A32145"))
-        font = QFont("Segoe UI")
-        font.setPixelSize(max(4, int(cell * 0.12)))
-        painter.setFont(font)
+
+        number_font = QFont("Segoe UI")
+        number_font.setBold(True)
+        number_font.setPixelSize(max(7, int(cell * 0.25)))
+        painter.setFont(number_font)
         painter.drawText(
-            rect.adjusted(1.5, 1.5, -1.5, -1.5),
-            Qt.TextWordWrap | Qt.AlignCenter,
-            "\n".join(lines),
+            rect.adjusted(2, 1, -2, -2),
+            Qt.AlignTop | Qt.AlignLeft,
+            str(number),
+        )
+
+        arrow_font = QFont("Segoe UI")
+        arrow_font.setBold(True)
+        arrow_font.setPixelSize(max(8, int(cell * 0.32)))
+        painter.setFont(arrow_font)
+        painter.drawText(
+            rect.adjusted(2, 2, -2, -2),
+            Qt.AlignBottom | Qt.AlignRight,
+            directions,
         )
         painter.restore()
 
@@ -181,16 +201,17 @@ class MainWindow(QMainWindow):
         splitter.addWidget(self.grid_widget)
 
         self.definitions_list = QListWidget()
-        self.definitions_list.setMinimumWidth(300)
+        self.definitions_list.setMinimumWidth(340)
         splitter.addWidget(self.definitions_list)
 
-        splitter.setSizes([280, 720, 320])
+        splitter.setSizes([260, 720, 360])
         root.addWidget(splitter, 1)
 
         self.setStyleSheet(
             """
             QMainWindow, QWidget { background:#F4F6FA; color:#202124; font-family:'Segoe UI'; }
             QListWidget { background:white; border:1px solid #E2E6EE; border-radius:14px; padding:8px; }
+            QListWidget::item { padding:5px 3px; }
             QPushButton { background:#5B5BD6; color:white; border:none; border-radius:9px; padding:9px 14px; font-weight:600; }
             QPushButton:hover { background:#4949BF; }
             QSpinBox { background:white; border:1px solid #D6DAE3; border-radius:8px; padding:7px; }
@@ -229,7 +250,7 @@ class MainWindow(QMainWindow):
             )
             return
 
-        generator = GridGenerator(size=self.size_spin.value(), seconds=5.0)
+        generator = GridGenerator(size=self.size_spin.value(), seconds=8.0)
         grid, self.placements = generator.generate(self.entries)
         self.grid_widget.set_grid(grid, self.placements)
 
@@ -237,13 +258,17 @@ class MainWindow(QMainWindow):
         for entry in self.entries:
             self.words_list.addItem(f"{'✓' if entry.placed else '•'}  {entry.word}")
 
+        numbers = self.grid_widget.clue_numbers()
         self.definitions_list.clear()
         for placement in sorted(
             self.placements,
-            key=lambda item: (item.clue_row, item.clue_col, not item.horizontal),
+            key=lambda item: (numbers[(item.clue_row, item.clue_col)], not item.horizontal),
         ):
+            number = numbers[(placement.clue_row, placement.clue_col)]
             arrow = "→" if placement.horizontal else "↓"
-            self.definitions_list.addItem(f"{arrow}  {placement.definition}")
+            self.definitions_list.addItem(
+                f"{number} {arrow}  {placement.definition}"
+            )
 
         placed = sum(entry.placed for entry in self.entries)
         self.statusBar().showMessage(

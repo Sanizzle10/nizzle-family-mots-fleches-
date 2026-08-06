@@ -15,6 +15,7 @@ import random
 import time
 from dataclasses import dataclass
 
+from app.mask_optimizer import improve_mask
 from app.mask_score import score_mask
 from app.models import (
     ARROW_DOWN,
@@ -122,8 +123,28 @@ class ArrowGridGenerator:
         best_score = -1
         best_pack = None
         layouts_tried = 0
+        families = 0
+        # Optimiser le masque paie quand le dictionnaire suit ; sinon les
+        # structures exigeantes échouent en boucle. Politique adaptative :
+        # on optimise tant que ça aboutit, on repasse en brut après deux
+        # échecs. Grands formats (> 180 cases) : pas d'optimisation pour
+        # l'instant — leur remplissage a besoin de tout le budget.
+        cells_total = self.width * self.height
+        scale = max(1.0, cells_total / 104.0)
+        max_climb_failures = 0 if cells_total > 180 else 2
+        climb_failures = 0
 
         while time.time() < deadline:
+            families += 1
+            climbed = climb_failures < max_climb_failures
+            # Budget par famille, proportionnel à la taille : sans lui, un
+            # masque exigeant dont les remplissages échouent lentement peut
+            # consommer tout le temps.
+            family_deadline = min(
+                deadline,
+                time.time()
+                + max(2.0, self.seconds * 0.35) * min(scale, 2.5),
+            )
             # Recalculés à chaque tour : sous forte charge, des défaillances
             # sporadiques de l'environnement (EDR/antivirus) peuvent corrompre
             # l'état du process ; des dérivés frais rendent chaque itération
@@ -137,13 +158,35 @@ class ArrowGridGenerator:
             if layout is None:
                 continue
 
+            # Descente de score avant remplissage : c'est elle qui donne aux
+            # structures leur allure magazine (mots de 5-6 lettres, cases
+            # définitions étalées) au lieu d'une mosaïque aléatoire. Une
+            # famille sur deux reste brute : si le dictionnaire est trop
+            # pauvre pour les structures exigeantes, les familles brutes
+            # gardent la porte du remplissage ouverte.
+            if climbed:
+                try:
+                    layout = improve_mask(
+                        layout,
+                        self.lengths,
+                        self.available,
+                        self.rng,
+                        deadline=min(
+                            family_deadline,
+                            time.time()
+                            + min(2.0, max(0.5, self.seconds * 0.15)),
+                        ),
+                    )
+                except (SystemError, TypeError):
+                    pass
+
             # Mutation guidée par l'échec : quand un emplacement résiste au
             # remplissage, on y insère une case définition et on répare la
             # structure, au lieu de repartir de zéro. La limite de cases
             # mortes n'est stricte que pour la structure initiale : les
             # mutations doivent rester libres d'ajouter des cases.
             for attempt in range(14):
-                if time.time() > deadline:
+                if time.time() > family_deadline:
                     break
                 try:
                     slots = self._slots_from_layout(
@@ -156,8 +199,14 @@ class ArrowGridGenerator:
                 if slots is None:
                     break
                 layouts_tried += 1
+                # Plafond dur par tentative : les échecs lents (masques
+                # presque remplissables) ne doivent pas étouffer la recherche.
+                # Les familles optimisées valent un effort supplémentaire, et
+                # les grandes grilles ont besoin de plus de temps par essai.
+                fill_cap = (2.5 if climbed else 1.5) * scale
                 fill_deadline = min(
-                    deadline, time.time() + max(0.5, self.seconds / 8)
+                    family_deadline,
+                    time.time() + min(fill_cap, max(0.5, self.seconds / 8)),
                 )
                 try:
                     complete, assigned = self._fill(slots, index, fill_deadline)
@@ -196,6 +245,10 @@ class ArrowGridGenerator:
 
             if best_pack is not None and best_pack[3]:
                 break
+            if climbed:
+                # Une famille optimisée n'a pas abouti : après deux échecs,
+                # le dictionnaire ne suit visiblement pas ces structures.
+                climb_failures += 1
 
         for entry in entries:
             entry.placed = False

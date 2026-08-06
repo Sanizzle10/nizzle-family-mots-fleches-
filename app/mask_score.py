@@ -100,6 +100,11 @@ class MaskScore:
     validity: int
     quality: int
     details: dict[str, int] = field(default_factory=dict)
+    # Part des lettres croisées dans les deux sens (information, pas pénalisé).
+    crossed_ratio: float = 0.0
+    # Pénalité attribuée case par case (si demandée) : sert aux mutations
+    # guidées de l'optimiseur.
+    cell_penalties: dict[tuple[int, int], float] | None = None
 
     @property
     def valid(self) -> bool:
@@ -136,6 +141,8 @@ def _runs_of(clue: list[list[bool]]):
 def score_mask(
     clue: list[list[bool]],
     available_lengths: set[int] | None = None,
+    available_counts: dict[int, int] | None = None,
+    with_cells: bool = False,
 ) -> MaskScore:
     height, width = len(clue), len(clue[0])
     details = {
@@ -147,8 +154,14 @@ def score_mask(
         "culs_de_sac": 0,
         "fleches": 0,
         "longueurs_indisponibles": 0,
+        "longueurs_epuisees": 0,
         "cases_mortes": 0,
     }
+    cell_map: dict[tuple[int, int], float] = {}
+
+    def attribute(cell: tuple[int, int], amount: float) -> None:
+        if with_cells:
+            cell_map[cell] = cell_map.get(cell, 0.0) + amount
 
     runs = _runs_of(clue)
     hlen = [[0] * width for _ in range(height)]
@@ -161,29 +174,47 @@ def score_mask(
                 vlen[r + i][c] = length
 
     # --- couverture de chaque case lettre
+    letter_count = 0
+    crossed_count = 0
     for r in range(height):
         for c in range(width):
             if clue[r][c]:
                 continue
+            letter_count += 1
             covered_h = hlen[r][c] >= 2
             covered_v = vlen[r][c] >= 2
             if covered_h and covered_v:
+                crossed_count += 1
                 continue
             if not covered_h and not covered_v:
                 details["orphelines"] += PENALTY_ORPHAN
+                attribute((r, c), PENALTY_ORPHAN)
             elif r == 0 or c == 0:
                 details["couverture"] += PENALTY_SINGLE_BORDER
+                attribute((r, c), PENALTY_SINGLE_BORDER)
             else:
                 details["couverture"] += PENALTY_SINGLE
+                attribute((r, c), PENALTY_SINGLE)
 
     # --- longueur des mots, disponibilité, flèches
     loads: dict[tuple[int, int], int] = {}
+    needs: dict[int, int] = {}
     for r, c, horizontal, length in runs:
         if length < 2:
             continue
-        details["longueurs"] += word_length_penalty(length)
+        run_cells = [
+            (r, c + i) if horizontal else (r + i, c) for i in range(length)
+        ]
+        penalty = word_length_penalty(length)
+        details["longueurs"] += penalty
+        if with_cells and penalty:
+            share = penalty / length
+            for cell in run_cells:
+                attribute(cell, share)
         if available_lengths is not None and length not in available_lengths:
             details["longueurs_indisponibles"] += PENALTY_LENGTH_UNAVAILABLE
+            attribute(run_cells[0], PENALTY_LENGTH_UNAVAILABLE)
+        needs[length] = needs.get(length, 0) + 1
 
         # Case définition atteignable : la case précédente (naturelle), ou la
         # flèche coudée depuis l'autre direction en bord de grille.
@@ -194,18 +225,30 @@ def score_mask(
         ar, ac = anchor
         if ar < 0 or ac < 0 or not clue[ar][ac]:
             details["fleches"] += PENALTY_ARROW
+            attribute(run_cells[0], PENALTY_ARROW)
         else:
             loads[anchor] = loads.get(anchor, 0) + 1
 
-    for load in loads.values():
+    for anchor, load in loads.items():
         if load > 2:
             details["fleches"] += PENALTY_ARROW * (load - 2)
+            attribute(anchor, PENALTY_ARROW * (load - 2))
+
+    # --- plus d'emplacements d'une longueur que de mots au dictionnaire
+    if available_counts is not None:
+        for length, need in needs.items():
+            surplus = need - available_counts.get(length, 0)
+            if surplus > 0:
+                details["longueurs_epuisees"] += (
+                    PENALTY_LENGTH_UNAVAILABLE * surplus
+                )
 
     # --- croisements de deux mots longs (> 6 lettres)
     for r in range(height):
         for c in range(width):
             if not clue[r][c] and hlen[r][c] >= 7 and vlen[r][c] >= 7:
                 details["croisements_longs"] += hlen[r][c] * vlen[r][c]
+                attribute((r, c), hlen[r][c] * vlen[r][c])
 
     # --- amas 8-connexes de cases définitions
     seen = [[False] * width for _ in range(height)]
@@ -238,7 +281,12 @@ def score_mask(
             extension = max(
                 max(rows_) - min(rows_) + 1, max(cols_) - min(cols_) + 1
             )
-            details["amas"] += int(round(cluster_penalty(size, extension)))
+            penalty = int(round(cluster_penalty(size, extension)))
+            details["amas"] += penalty
+            if with_cells and penalty:
+                share = penalty / len(cells)
+                for cell in cells:
+                    attribute(cell, share)
 
     # --- culs-de-sac : lettre cernée par 3 cases non-lettre (hors bords
     # haut/gauche, où c'est inévitable)
@@ -253,17 +301,20 @@ def score_mask(
                     blocked += 1
             if blocked >= 3:
                 details["culs_de_sac"] += PENALTY_DEAD_END
+                attribute((r, c), PENALTY_DEAD_END)
 
     # --- cases définitions ne servant aucun mot [nous]
     for r in range(height):
         for c in range(width):
             if clue[r][c] and (r, c) not in loads:
                 details["cases_mortes"] += PENALTY_DEAD_CLUE
+                attribute((r, c), PENALTY_DEAD_CLUE)
 
     validity = (
         details["orphelines"]
         + details["fleches"]
         + details["longueurs_indisponibles"]
+        + details["longueurs_epuisees"]
     )
     quality = sum(details.values()) - validity
     return MaskScore(
@@ -271,4 +322,6 @@ def score_mask(
         validity=validity,
         quality=quality,
         details=details,
+        crossed_ratio=crossed_count / letter_count if letter_count else 0.0,
+        cell_penalties=cell_map if with_cells else None,
     )

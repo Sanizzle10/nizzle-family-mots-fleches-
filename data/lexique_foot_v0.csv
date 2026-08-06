@@ -1,0 +1,398 @@
+mot;affichage;longueur;categorie;definition;registre;niveau;verif
+ZZ;Z.Z.;2;initiales;Initiales du héros de 1998;joueur;1;Zidane double buteur finale 98
+ZZ;Z.Z.;2;initiales;Sa Panenka de 2006 est restée célèbre;joueur;2;finale 2006 France-Italie
+DD;D.D.;2;initiales;Initiales du sélectionneur champion 2018;factuel;1;Deschamps sélectionneur 2012-2025
+DD;D.D.;2;initiales;Il l'a gagnée en joueur et en sélectionneur;joueur;1;champion 1998 et 2018
+KM;K.M.;2;initiales;Initiales du capitaine des Bleus;factuel;1;Mbappé capitaine depuis 2023
+KM;K.M.;2;initiales;Le Bondynois en deux lettres;joueur;2;Mbappé né à Bondy
+LM;L.M.;2;initiales;La Pulga en initiales;joueur;1;surnom de Messi
+LM;L.M.;2;initiales;Initiales d'un octuple Ballon d'Or;factuel;1;Messi 8 Ballons d'Or
+CR;C.R.;2;initiales;Initiales du Portugais aux cinq Ballons d'Or;factuel;1;Cristiano Ronaldo
+CR;C.R.;2;initiales;Siuuu en deux lettres;joueur;2;célébration de Ronaldo
+NM;N.M.;2;initiales;Initiales du crack de Santos passé par Paris;factuel;2;Neymar PSG 2017-2023
+NM;N.M.;2;initiales;Le Ney en initiales;joueur;2;surnom de Neymar
+AG;A.G.;2;initiales;Initiales du Français de l'Atlético;factuel;2;Griezmann Atlético
+AG;A.G.;2;initiales;Grizou en initiales;joueur;1;surnom de Griezmann
+OG;O.G.;2;initiales;Initiales de Giroud;factuel;1;
+OG;O.G.;2;initiales;Sa volée en scorpion a eu le prix Puskas;joueur;2;prix Puskas 2017
+KB;K.B.;2;initiales;Initiales du Nueve de Madrid;joueur;2;Benzema Real 2009-2023
+KB;K.B.;2;initiales;Initiales du Ballon d'Or 2022;factuel;1;Benzema Ballon d'Or 2022
+PP;P.P.;2;initiales;Initiales de la Pioche;joueur;2;surnom de Pogba
+PP;P.P.;2;initiales;Initiales de Pogba;factuel;1;
+NK;N.K.;2;initiales;Initiales de l'infatigable N'Golo;joueur;1;Kanté
+NK;N.K.;2;initiales;Il couvrait tout le terrain en 2018;joueur;2;Kanté champion 2018
+TH;T.H.;2;initiales;Initiales du roi d'Highbury;joueur;2;Henry légende d'Arsenal
+TH;T.H.;2;initiales;Titi en initiales;joueur;2;surnom de Thierry Henry
+EC;E.C.;2;initiales;Initiales du King de Manchester;joueur;2;Cantona
+EC;E.C.;2;initiales;Initiales de Cantona;factuel;1;
+MP;M.P.;2;initiales;Initiales de Platini;factuel;1;
+MP;M.P.;2;initiales;Le patron des Bleus de 1984 en initiales;joueur;2;Platini Euro 1984
+SM;S.M.;2;initiales;Initiales de Sadio Mané;factuel;1;
+SM;S.M.;2;clubs;Stade Malherbe en abrégé;factuel;2;SM Caen
+RB;R.B.;2;clubs;Sigle énergisant de Leipzig;joueur;2;RB Leipzig
+RB;R.B.;2;clubs;Taureaux rouges en sigle;joueur;2;Red Bull
+EA;E.A.;2;clubs;En Avant de Guingamp en sigle;factuel;2;EA Guingamp
+EA;E.A.;2;culture;L'éditeur du jeu FC en sigle;factuel;1;EA Sports FC
+AJ;A.J.;2;clubs;Auxerre en sigle;factuel;1;AJ Auxerre
+AJ;A.J.;2;clubs;Le club de Guy Roux en sigle;joueur;2;Guy Roux AJA
+US;U.S.;2;clubs;Union Sportive en abrégé;factuel;1;
+US;U.S.;2;selections;Préfixe du pays hôte 2026;factuel;2;USA hôte CDM 2026
+CF;C.F.;2;clubs;Clermont Foot en sigle;factuel;2;
+CF;C.F.;2;clubs;Les deux dernières lettres du Real Madrid;factuel;2;Real Madrid CF
+OM;O.M.;2;clubs;Le club phocéen en sigle;factuel;1;Olympique de Marseille
+OM;O.M.;2;clubs;Champion d'Europe 1993;factuel;1;OM vainqueur C1 1993
+OL;O.L.;2;clubs;Les Gones en sigle;factuel;1;Olympique Lyonnais
+OL;O.L.;2;clubs;Sept titres d'affilée dans les années 2000;factuel;2;OL champion 2002-2008
+AC;A.C.;2;clubs;Préfixe rossonero de Milan;factuel;1;AC Milan
+AC;A.C.;2;clubs;Ajaccio en sigle;factuel;2;AC Ajaccio
+FC;F.C.;2;clubs;Football Club en abrégé;factuel;1;
+FC;F.C.;2;clubs;Préfixe de Barcelone ou de Nantes;factuel;1;
+RC;R.C.;2;clubs;Racing Club en abrégé;factuel;1;
+RC;R.C.;2;clubs;Préfixe de Lens ou de Strasbourg;factuel;1;
+SC;S.C.;2;clubs;Sporting Club en abrégé;factuel;1;
+SC;S.C.;2;clubs;Préfixe de Bastia;factuel;2;SC Bastia
+AS;A.S.;2;clubs;Association Sportive en abrégé;factuel;1;
+AS;A.S.;2;clubs;Préfixe de Monaco ou de Rome;factuel;1;AS Monaco AS Roma
+KO;K.-O.;2;vocab;Sonné debout;joueur;1;
+KO;K.-O.;2;vocab;Éliminé au tableau final;joueur;2;phase à élimination directe
+OR;or;2;competitions;Métal du Ballon des meilleurs;factuel;1;Ballon d'Or
+OR;or;2;competitions;Le but en ... éliminait sur-le-champ;factuel;2;but en or 1996-2004
+TV;télé;2;culture;Les matchs y passent en prime;factuel;1;
+TV;télé;2;culture;Écran des soirs de Ligue des champions;joueur;1;
+XI;XI;2;vocab;Le onze en romain;factuel;1;
+XI;XI;2;vocab;Équipe type à la romaine;joueur;2;
+UN;un;2;vocab;Numéro du gardien;factuel;1;
+UN;un;2;vocab;Le premier au classement;factuel;1;
+IL;il;2;fillfoot;Pronom du buteur;joueur;1;
+IL;il;2;fillfoot;Pronom masculin;factuel;1;
+ON;on;2;fillfoot;Pronom des chants de tribune;joueur;2;
+ON;on;2;fillfoot;Pronom indéfini;factuel;1;
+ET;et;2;fillfoot;Lie l'attaque à la défense;joueur;1;
+ET;et;2;fillfoot;Conjonction du duo;factuel;1;
+OU;ou;2;fillfoot;Conjonction d'alternative;factuel;1;
+OU;ou;2;fillfoot;Aller ... retour au choix;joueur;2;
+AN;an;2;fillfoot;Douze mois de mercato;joueur;1;
+AN;an;2;fillfoot;Unité de durée des contrats;factuel;1;
+OS;os;2;fillfoot;Fracture redoutée du tacleur;joueur;2;
+OS;os;2;fillfoot;Charpente du squelette;factuel;1;
+EN;en;2;fillfoot;Équipe nationale en abrégé;factuel;2;
+EN;en;2;fillfoot;Préposition;factuel;1;
+RE;ré;2;fillfoot;Préfixe du match retour;joueur;2;
+RE;ré;2;fillfoot;Note de la gamme;factuel;1;
+LA;la;2;fillfoot;Article de la Liga;joueur;2;
+LA;la;2;fillfoot;Note de la gamme;factuel;1;
+LE;le;2;fillfoot;Article du Classique;joueur;2;
+LE;le;2;fillfoot;Article défini;factuel;1;
+SE;se;2;fillfoot;Pronom réfléchi;factuel;1;
+SE;se;2;fillfoot;Pronom du repli défensif;joueur;2;
+NI;ni;2;fillfoot;Conjonction négative;factuel;1;
+NI;ni;2;fillfoot;Jumelle négative;joueur;2;
+DE;de;2;fillfoot;Préposition;factuel;1;
+DE;de;2;fillfoot;Il précède Bruyne;joueur;2;Kevin De Bruyne
+BUT;but;3;vocab;L'objectif du jeu;factuel;1;
+BUT;but;3;vocab;On le célèbre bras levés;joueur;1;
+TIR;tir;3;vocab;Frappe cadrée ou non;factuel;1;
+TIR;tir;3;vocab;Il peut être enroulé;joueur;2;
+LOB;lob;3;vocab;Frappe qui passe au-dessus du gardien;factuel;1;
+VAR;V.A.R.;3;vocab;L'arbitrage vidéo en sigle;factuel;1;
+VAR;V.A.R.;3;vocab;Trois lettres qui annulent des buts;joueur;1;
+CSC;C.S.C.;3;vocab;But marqué contre son camp en sigle;factuel;1;
+CSC;C.S.C.;3;vocab;Le but dont personne ne veut;joueur;2;
+PSG;P.S.G.;3;clubs;Le club de la capitale en sigle;factuel;1;
+PSG;P.S.G.;3;clubs;Premier champion d'Europe français depuis 1993;factuel;2;vainqueur C1 2025
+FFF;F.F.F.;3;selections;La fédération tricolore en sigle;factuel;1;
+CAN;C.A.N.;3;competitions;La coupe continentale africaine en sigle;factuel;1;
+OLE;olé;3;culture;Cri des passes réussies en tribune;joueur;1;
+OLE;olé;3;culture;Exclamation de toréador;factuel;1;
+OLA;ola;3;culture;La vague des tribunes;factuel;1;
+OLA;ola;3;culture;Elle fait lever tout le stade;joueur;1;
+ETE;été;3;fillfoot;Saison du mercato;joueur;1;
+ETE;été;3;fillfoot;Saison des tournois de préparation;factuel;2;
+ERE;ère;3;fillfoot;Époque d'un règne;factuel;1;
+ROI;roi;3;legendes;Surnom de Pelé;factuel;1;
+ROI;roi;3;fillfoot;Monarque;factuel;1;
+MER;mer;3;fillfoot;Étendue salée;factuel;1;
+SUD;sud;3;culture;Virage des ultras à Marseille;joueur;2;virage Sud Vélodrome
+SUD;sud;3;fillfoot;Point cardinal;factuel;1;
+EST;est;3;fillfoot;Point cardinal;factuel;1;
+AIL;ail;3;fillfoot;Condiment en gousse;factuel;1;
+ILE;île;3;fillfoot;Terre entourée d'eau;factuel;1;
+USE;use;3;fillfoot;Abîme le maillot;joueur;2;
+OSE;ose;3;fillfoot;Tente le geste fou;joueur;1;
+ANE;âne;3;fillfoot;Équidé têtu;factuel;1;
+AIR;air;3;fillfoot;Le ballon y flotte sur un lob;joueur;2;
+EAU;eau;3;fillfoot;Contenu de la gourde;joueur;1;
+NET;net;3;fillfoot;Score sans appel;joueur;2;
+SEL;sel;3;fillfoot;Assaisonnement des derbies;joueur;2;
+RAI;Raí;3;legendes;Meneur brésilien du PSG des années 90;factuel;2;Raí PSG 1993-1998
+LAC;lac;3;fillfoot;Étendue d'eau douce;factuel;1;
+FIL;fil;3;fillfoot;Le match tient parfois à lui;joueur;2;
+CAP;cap;3;vocab;Une sélection en anglais;factuel;2;
+COR;cor;3;fillfoot;Instrument des fanfares de stade;joueur;2;
+RAT;rat;3;fillfoot;Rongeur;factuel;1;
+TAS;tas;3;fillfoot;Pile de maillots;joueur;1;
+SAC;sac;3;fillfoot;Bagage du déplacement;joueur;1;
+RIO;Rio;3;stades;Ville du Maracana;factuel;1;
+LEO;Leo;3;legendes;Prénom de la Pulga;factuel;1;Lionel Messi
+DUO;duo;3;vocab;Paire d'attaque;joueur;1;
+HAC;H.A.C.;3;clubs;Doyen des clubs français en sigle;factuel;2;Le Havre AC fondé 1872
+OGC;O.G.C.;3;clubs;Sigle niçois;factuel;2;OGC Nice
+FCN;F.C.N.;3;clubs;Sigle canari;factuel;2;FC Nantes
+ASM;A.S.M.;3;clubs;Sigle monégasque;factuel;2;AS Monaco
+PUB;pub;3;culture;Où les British regardent les matchs;joueur;1;
+PUB;pub;3;culture;Coupure des mi-temps télé;joueur;2;
+FAN;fan;3;culture;Supporter inconditionnel;factuel;1;
+MUR;mur;3;vocab;Il se dresse sur coup franc;factuel;1;
+MUR;mur;3;vocab;Surnom d'une défense infranchissable;joueur;2;
+AXE;axe;3;vocab;Couloir central du terrain;factuel;1;
+NUL;nul;3;vocab;Score de parité;factuel;1;
+NUL;nul;3;vocab;Vous êtes pas contents ?;joueur;2;
+BAL;bal;3;fillfoot;Soirée dansante;factuel;1;
+AME;âme;3;fillfoot;Cœur d'une équipe;joueur;1;
+RUE;rue;3;fillfoot;Le foot y commence souvent;joueur;1;
+VIE;vie;3;fillfoot;Elle continue après une défaite;joueur;1;
+NEZ;nez;3;fillfoot;Flair du buteur;joueur;1;
+DOS;dos;3;fillfoot;Le numéro s'y affiche;joueur;1;
+PRE;pré;3;fillfoot;Autre nom du rectangle vert;joueur;2;
+UNE;une;3;culture;Première page des journaux sportifs;factuel;1;
+SUR;sur;3;fillfoot;Préposition du marquage strict;joueur;2;
+PAR;par;3;fillfoot;Préposition;factuel;1;
+LOI;loi;3;vocab;Il y en a dix-sept dans le jeu;factuel;2;17 lois de l'IFAB
+GAG;gag;3;fillfoot;Le CSC ridicule en est un;joueur;2;
+TOP;top;3;fillfoot;Départ du sprint;factuel;1;
+ODE;ode;3;fillfoot;Chant à la gloire d'une idole;factuel;2;
+ETC;etc.;3;fillfoot;Abréviation des longues listes;factuel;1;
+ITA;ITA;3;selections;Code FIFA de l'Italie;factuel;2;
+ESP;ESP;3;selections;Code FIFA de l'Espagne;factuel;2;
+ARG;ARG;3;selections;Code FIFA des triples champions du monde;factuel;2;Argentine 1978 1986 2022
+BRA;BRA;3;selections;Code FIFA du pays aux cinq étoiles;factuel;2;Brésil quintuple champion
+FRA;FRA;3;selections;Code FIFA des Bleus;factuel;1;
+ENG;ENG;3;selections;Code FIFA des Three Lions;factuel;2;Angleterre
+POR;POR;3;selections;Code FIFA du pays de Ronaldo;factuel;2;Portugal
+URU;URU;3;selections;Code FIFA du premier champion du monde;factuel;2;Uruguay 1930
+MEX;MEX;3;selections;Code FIFA d'un hôte 2026;factuel;2;Mexique co-hôte
+USA;USA;3;selections;Hôte principal du Mondial 2026;factuel;1;
+PELE;Pelé;4;legendes;Le Roi aux trois Mondiaux;factuel;1;1958 1962 1970
+XAVI;Xavi;4;legendes;Métronome du tiki-taka;joueur;1;
+KAKA;Kaká;4;legendes;Ballon d'Or 2007;factuel;1;
+ZICO;Zico;4;legendes;Surnommé le Pelé blanc;factuel;2;
+RAUL;Raúl;4;legendes;Légende madrilène du numéro 7;factuel;2;
+OWEN;Owen;4;legendes;Ballon d'Or 2001;factuel;2;Michael Owen
+KANE;Kane;4;actuels;Buteur anglais du Bayern;factuel;1;
+MANE;Mané;4;actuels;Champion d'Afrique 2022;factuel;1;Sénégal CAN 2022
+SAKA;Saka;4;actuels;Ailier des Gunners;factuel;1;
+PEPE;Pepe;4;legendes;Roc portugais;factuel;2;
+NANI;Nani;4;legendes;Ailier portugais de United;factuel;2;
+DECO;Deco;4;legendes;Meneur luso-brésilien;factuel;2;
+ETOO;Eto'o;4;legendes;Légende camerounaise;factuel;1;Samuel Eto'o
+CECH;Čech;4;legendes;Gardien au casque;factuel;1;Petr Čech
+KOPA;Kopa;4;legendes;Ballon d'Or français 1958;factuel;2;Raymond Kopa
+ZOLA;Zola;4;legendes;Magicien sarde de Chelsea;factuel;2;Gianfranco Zola
+GAVI;Gavi;4;actuels;Prodige du Barça;factuel;1;
+FATI;Fati;4;actuels;Ansu précoce du Barça;factuel;2;
+LUIZ;Luiz;4;legendes;David frisé de Chelsea et du PSG;joueur;2;David Luiz
+EURO;Euro;4;competitions;Championnat pas mondial;joueur;1;
+EURO;euro;4;fillfoot;Monnaie des transferts;factuel;1;
+COPA;Copa;4;competitions;Coupe en VO sud-américaine;factuel;1;Copa America
+FIFA;FIFA;4;competitions;L'instance mondiale;factuel;1;
+UEFA;UEFA;4;competitions;L'instance européenne;factuel;1;
+REAL;Real;4;clubs;Géant madrilène;factuel;1;
+AJAX;Ajax;4;clubs;École batave;factuel;1;
+ROMA;Roma;4;clubs;Louve italienne;factuel;1;
+METZ;Metz;4;clubs;Grenats de Lorraine;factuel;2;
+CAEN;Caen;4;clubs;Club normand;factuel;2;
+LENS;Lens;4;clubs;Sang et or;factuel;1;
+NICE;Nice;4;clubs;Ville des Aiglons;factuel;1;
+LYON;Lyon;4;clubs;Ville des Gones;factuel;1;
+ASSE;A.S.S.E.;4;clubs;Les Verts en sigle;factuel;1;
+LOSC;LOSC;4;clubs;Les Dogues en sigle;factuel;1;Lille
+PARC;Parc;4;stades;L'antre parisien a ses Princes;joueur;1;Parc des Princes
+CLUB;club;4;vocab;Maison d'un joueur;factuel;1;
+BANC;banc;4;vocab;Les remplaçants s'y assoient;factuel;1;
+AILE;aile;4;vocab;Couloir du dribbleur;factuel;1;
+TETE;tête;4;vocab;Frappe du front;factuel;1;
+GOAL;goal;4;vocab;Gardien en anglais;factuel;1;
+NIKE;Nike;4;culture;Virgule équipementière;joueur;1;
+PUMA;Puma;4;culture;Félin équipementier;joueur;1;
+ONZE;onze;4;vocab;Effectif de départ;factuel;1;
+TIFO;tifo;4;culture;Fresque déployée par les ultras;factuel;1;
+CHOC;choc;4;vocab;Affiche de la journée;joueur;1;
+DUEL;duel;4;vocab;Un contre un;factuel;1;
+MAIN;main;4;vocab;Faute involontaire parfois;factuel;1;
+PIED;pied;4;vocab;Outil principal du jeu;factuel;1;
+CAGE;cage;4;vocab;Domaine du gardien;factuel;1;
+LOGE;loge;4;vocab;Tribune VIP;factuel;1;
+PERE;père;4;fillfoot;Lilian pour Marcus et Khéphren;joueur;2;famille Thuram
+FILS;fils;4;fillfoot;Marcus pour Lilian;joueur;2;famille Thuram
+ZONE;zone;4;vocab;Défense collective;factuel;2;
+LOFT;loft;4;vocab;Purgatoire des indésirables;joueur;2;
+PRET;prêt;4;vocab;Transfert temporaire;factuel;1;
+STAR;star;4;vocab;Tête d'affiche;factuel;1;
+FLOP;flop;4;vocab;Transfert raté;joueur;1;
+TEAM;team;4;vocab;Équipe en anglais;factuel;1;
+GARE;gare;4;fillfoot;Point de départ des déplacements;joueur;2;
+RAGE;rage;4;fillfoot;Celle de vaincre;joueur;1;
+EAUX;eaux;4;fillfoot;Pluriel aquatique;factuel;1;
+AINE;aine;4;fillfoot;Zone des claquages;joueur;2;
+IDEE;idée;4;fillfoot;Éclair du numéro dix;joueur;2;
+OSER;oser;4;fillfoot;Tenter le grand pont;joueur;1;
+AMER;amer;4;fillfoot;Goût de la défaite;joueur;1;
+RIRE;rire;4;fillfoot;Réaction au petit pont subi;joueur;2;
+ELAN;élan;4;vocab;Course avant la frappe;factuel;1;
+OREE;orée;4;fillfoot;Lisière;factuel;2;
+USER;user;4;fillfoot;Fatiguer l'adversaire;joueur;2;
+ETRE;être;4;fillfoot;Exister;factuel;1;
+ANSE;anse;4;fillfoot;Poignée de la coupe;joueur;2;
+ECHO;écho;4;fillfoot;Rumeur de mercato;joueur;2;
+SETE;Sète;4;clubs;Auteur du doublé coupe-championnat 1934;factuel;3;FC Sète 1934
+MESSI;Messi;5;legendes;Huit Ballons d'Or;factuel;1;
+KANTE;Kanté;5;legendes;Récupérateur souriant de 2018;factuel;1;
+POGBA;Pogba;5;legendes;La Pioche;joueur;1;
+HENRY;Henry;5;legendes;Meilleur buteur de l'histoire d'Arsenal;factuel;1;
+PAPIN;Papin;5;legendes;Ballon d'Or 1991;factuel;1;
+PIRLO;Pirlo;5;legendes;Architecte italien;joueur;1;
+TOTTI;Totti;5;legendes;Empereur de Rome;joueur;1;
+NESTA;Nesta;5;legendes;Élégance défensive italienne;joueur;2;
+RAMOS;Ramos;5;legendes;Sauveur madrilène de la 93e à Lisbonne;factuel;2;finale C1 2014
+PIQUE;Piqué;5;legendes;Central catalan champion du monde;factuel;2;
+NEUER;Neuer;5;legendes;Gardien libéro bavarois;factuel;1;
+KROOS;Kroos;5;legendes;Passeur allemand de Madrid;factuel;1;
+ALABA;Alaba;5;actuels;Autrichien polyvalent;factuel;2;
+VIDAL;Vidal;5;legendes;Guerrier chilien;joueur;2;
+SILVA;Silva;5;actuels;Magicien de City ou roc de Chelsea;factuel;2;
+COSTA;Costa;5;legendes;Diego au sang chaud;joueur;2;
+PEDRI;Pedri;5;actuels;Joyau canarien du Barça;factuel;1;
+KLOPP;Klopp;5;coachs;Coach du heavy metal football;joueur;1;
+STADE;stade;5;vocab;Théâtre des matchs;factuel;1;
+COUPE;coupe;5;competitions;On espère la ramener à la maison;joueur;1;
+COUPE;coupe;5;competitions;Compétition à élimination directe;factuel;1;
+LIGUE;ligue;5;competitions;Celle des champions se joue le mardi;joueur;1;
+TACLE;tacle;5;vocab;Geste défensif glissé;factuel;1;
+PASSE;passe;5;vocab;Caviar quand elle est décisive;joueur;1;
+VOLEE;volée;5;vocab;Reprise sans contrôle;factuel;1;
+FAUTE;faute;5;vocab;Elle donne un coup franc;factuel;1;
+APPEL;appel;5;vocab;Course dans le dos de la défense;factuel;1;
+TALON;talon;5;vocab;Arrière du pied des passes chics;joueur;2;
+PIVOT;pivot;5;vocab;Attaquant dos au but;factuel;2;
+GESTE;geste;5;vocab;Panenka ou madjer par exemple;joueur;2;
+HYMNE;hymne;5;culture;Chanté avant le coup d'envoi;factuel;1;
+SCORE;score;5;vocab;Affiché au tableau;factuel;1;
+RALER;râler;5;fillfoot;Protester contre l'arbitre;joueur;1;
+CRIER;crier;5;fillfoot;S'égosiller en tribune;joueur;1;
+MILAN;Milan;5;clubs;Club rossonero;factuel;1;
+INTER;Inter;5;clubs;Rival nerazzurro du Milan;factuel;1;
+PORTO;Porto;5;clubs;Dragons lusitaniens;factuel;2;
+ARENA;arena;5;stades;Stade à l'antique;factuel;2;
+ULTRA;ultra;5;culture;Supporter du virage;factuel;1;
+TIFOS;tifos;5;culture;Fresques des virages;factuel;2;
+REIMS;Reims;5;clubs;Grand club français des années 50;factuel;2;finaliste C1 1956 1959
+SEDAN;Sedan;5;clubs;Sangliers des Ardennes;factuel;2;
+LILLE;Lille;5;clubs;Champion de France 2021;factuel;1;
+PARIS;Paris;5;clubs;Capitale du champion d'Europe 2025;factuel;1;PSG C1 2025
+NANCY;Nancy;5;clubs;Club des débuts de Platini;factuel;2;
+DIJON;Dijon;5;clubs;Moutarde et football;joueur;2;
+BLEUS;Bleus;5;selections;Surnom des internationaux français;factuel;1;
+SACRE;sacre;5;vocab;Couronnement de fin de saison;factuel;1;
+TERRE;terre;5;fillfoot;Planète foot;joueur;1;
+OCEAN;océan;5;fillfoot;L'Atlantique en est un;factuel;1;
+RATER;rater;5;fillfoot;Manquer l'immanquable;joueur;1;
+ECART;écart;5;vocab;Différence au score;factuel;1;
+GAZON;gazon;5;vocab;Moquette naturelle du terrain;joueur;1;
+ZIDANE;Zidane;6;legendes;Doublé de la tête en finale 98;factuel;1;
+MBAPPE;Mbappé;6;actuels;Capitaine des Bleus;factuel;1;
+GIROUD;Giroud;6;legendes;Volée en scorpion primée en 2017;factuel;2;prix Puskas 2017
+VARANE;Varane;6;legendes;Quadruple champion d'Europe avec Madrid;factuel;2;
+THURAM;Thuram;6;legendes;Doublé mythique en demie de 98;factuel;1;France-Croatie 1998
+LLORIS;Lloris;6;legendes;Capitaine gantier de 2018;factuel;1;
+NEYMAR;Neymar;6;legendes;Transfert le plus cher de l'histoire;factuel;1;222 millions 2017
+BUFFON;Buffon;6;legendes;Mur turinois;joueur;1;
+HAZARD;Hazard;6;legendes;Dribbleur belge;factuel;1;
+VIEIRA;Vieira;6;legendes;Patron du milieu des années 2000;factuel;1;
+MODRIC;Modrić;6;legendes;Ballon d'Or 2018;factuel;1;
+RIBERY;Ribéry;6;legendes;Kaiser Franck;joueur;1;
+SUAREZ;Suárez;6;legendes;Le Pistolero;joueur;1;
+ROONEY;Rooney;6;legendes;Buteur record de United;factuel;1;
+KOUNDE;Koundé;6;actuels;Défenseur stylé des Bleus;joueur;1;
+WENGER;Wenger;6;coachs;Professeur d'Arsenal;joueur;1;
+CORNER;corner;6;vocab;Tir de coin;factuel;1;
+BUTEUR;buteur;6;vocab;Renard des surfaces;joueur;1;
+MILIEU;milieu;6;vocab;L'entrejeu;factuel;1;
+CENTRE;centre;6;vocab;Offrande pour la tête du buteur;joueur;1;
+TIRAGE;tirage;6;competitions;Il désigne les affiches;factuel;1;
+FANION;fanion;6;vocab;Échangé par les capitaines;factuel;1;
+MONACO;Monaco;6;clubs;Club princier;factuel;1;
+RENNES;Rennes;6;clubs;Rouge et noir breton;factuel;1;
+NANTES;Nantes;6;clubs;Maison des Canaris;factuel;1;
+AMIENS;Amiens;6;clubs;Club picard;factuel;2;
+TROYES;Troyes;6;clubs;Club aubois;factuel;2;
+BAYERN;Bayern;6;clubs;Ogre bavarois;factuel;1;
+NAPLES;Naples;6;clubs;Royaume de Diego;joueur;1;Maradona à Naples
+CARTON;carton;6;vocab;Jaune ou rouge;factuel;1;
+SIRENE;sirène;6;fillfoot;Chant marin trompeur;factuel;2;
+ETOILE;étoile;6;selections;Brodée au-dessus du coq;factuel;1;
+SAISON;saison;6;vocab;D'août à mai;factuel;1;
+DOUBLE;doublé;6;vocab;Coupe et championnat la même année;factuel;1;
+TRIPLE;triplé;6;vocab;Trois buts d'un même joueur;factuel;1;
+FILETS;filets;6;vocab;Ils tremblent quand ça rentre;joueur;1;
+PRESSE;presse;6;culture;Elle note les joueurs le lundi;joueur;1;
+BENZEMA;Benzema;7;legendes;Ballon d'Or 2022;factuel;1;
+PLATINI;Platini;7;legendes;Triple Ballon d'Or consécutif;factuel;1;1983 1984 1985
+INIESTA;Iniesta;7;legendes;Héros de la finale 2010;factuel;1;but en finale CDM 2010
+HAALAND;Haaland;7;actuels;Cyborg norvégien;joueur;1;
+ARSENAL;Arsenal;7;clubs;Les Gunners;factuel;1;
+CHELSEA;Chelsea;7;clubs;Blues de Stamford Bridge;factuel;1;
+ANFIELD;Anfield;7;stades;Forteresse de Liverpool;factuel;1;
+SEVILLE;Séville;7;clubs;Abonnée à la Ligue Europa;joueur;2;record de victoires C3
+LUCARNE;lucarne;7;vocab;Coin parfait de la cage;factuel;1;
+PENALTY;penalty;7;vocab;Face-à-face au point fatidique;factuel;1;
+MERCATO;mercato;7;vocab;Marché des transferts;factuel;1;
+TRIBUNE;tribune;7;stades;Gradins des fidèles;factuel;1;
+ATTAQUE;attaque;7;vocab;La meilleure des défenses dit-on;joueur;1;
+DEFENSE;défense;7;vocab;Elle gagne les titres dit-on;joueur;1;
+ARBITRE;arbitre;7;vocab;L'homme au sifflet;factuel;1;
+MAILLOT;maillot;7;vocab;Tunique échangée après le match;factuel;1;
+PELOUSE;pelouse;7;stades;Verte et tondue de frais;factuel;1;
+REPRISE;reprise;7;vocab;Retour du championnat;factuel;1;
+BARTHEZ;Barthez;7;legendes;Crâne embrassé en 98;factuel;1;rituel de Laurent Blanc
+TERRAIN;terrain;7;vocab;Rectangle vert;factuel;1;
+SIFFLET;sifflet;7;vocab;Trois coups pour la fin;factuel;1;
+POTEAUX;poteaux;7;vocab;Montants malchanceux;joueur;1;
+DRIBBLE;dribble;7;vocab;L'arme du déséquilibre;factuel;1;
+CRAMPON;crampon;7;vocab;Dent de la chaussure;factuel;1;
+GARDIEN;gardien;7;vocab;Dernier rempart;factuel;1;
+LEGENDE;légende;7;vocab;Pelé ou Maradona;factuel;1;
+NUMEROS;numéros;7;vocab;De 1 à 99 dans le dos;factuel;1;
+SURFACE;surface;7;vocab;Rectangle du penalty;factuel;1;
+MARADONA;Maradona;8;legendes;Main de Dieu et but du siècle;factuel;1;1986
+JUVENTUS;Juventus;8;clubs;La Vieille Dame;factuel;1;
+DORTMUND;Dortmund;8;clubs;Ville du mur jaune;factuel;1;
+COURTOIS;Courtois;8;actuels;Géant belge des cages madrilènes;factuel;1;
+CHARLTON;Charlton;8;legendes;Sir Bobby de United;factuel;2;
+MOURINHO;Mourinho;8;coachs;Le Special One;factuel;1;
+FERGUSON;Ferguson;8;coachs;Sir Alex aux treize Premier League;factuel;1;
+DESAILLY;Desailly;8;legendes;Roc de 98;factuel;1;
+MAKELELE;Makélélé;8;legendes;Un poste porte son nom;factuel;1;rôle de sentinelle
+VINICIUS;Vinícius;8;actuels;Ailier brésilien du Real;factuel;1;
+DRIBBLES;dribbles;8;vocab;Chapelets de crochets;joueur;1;
+PELOUSES;pelouses;8;stades;Rectangles verts au pluriel;factuel;1;
+LATERAUX;latéraux;8;vocab;Défenseurs de couloir;factuel;1;
+ATTAQUES;attaques;8;vocab;Phases offensives;factuel;1;
+DEFENSES;défenses;8;vocab;Arrière-gardes;factuel;1;
+DESCHAMPS;Deschamps;9;coachs;Champion du monde joueur puis sélectionneur;factuel;1;1998 et 2018
+TREZEGUET;Trezeguet;9;legendes;But en or de l'Euro 2000;factuel;1;
+BARCELONE;Barcelone;9;clubs;Maison blaugrana;factuel;1;
+LIVERPOOL;Liverpool;9;clubs;You'll Never Walk Alone;factuel;1;
+GRIEZMANN;Griezmann;9;actuels;Grizou;joueur;1;
+MARSEILLE;Marseille;9;clubs;Cité phocéenne;factuel;1;
+VESTIAIRE;vestiaire;9;vocab;La causerie s'y tient;factuel;1;
+CAPITAINE;capitaine;9;vocab;Porteur du brassard;factuel;1;
+ANCELOTTI;Ancelotti;9;coachs;Sourcil le plus célèbre du banc;joueur;1;
+GUARDIOLA;Guardiola;9;coachs;Pep obsédé de la possession;joueur;1;
+TCHOUAMENI;Tchouaméni;10;actuels;Milieu français du Real;factuel;1;
+AUBAMEYANG;Aubameyang;10;actuels;Panthère gabonaise;joueur;1;
+SUPPORTERS;supporters;10;culture;Le douzième homme au pluriel;joueur;1;
+ATTAQUANTS;attaquants;10;vocab;Ils vivent pour le but;factuel;1;
+IBRAHIMOVIC;Ibrahimović;11;legendes;Zlatan tout simplement;joueur;1;
+LEWANDOWSKI;Lewandowski;11;legendes;Machine à buts polonaise;factuel;1;
+PROLONGATION;prolongation;12;vocab;Trente minutes de plus;factuel;1;
+SAINTETIENNE;Saint-Étienne;12;clubs;Ville des Verts;factuel;1;

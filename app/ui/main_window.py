@@ -4,8 +4,16 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
-from PySide6.QtCore import Qt, QRectF
-from PySide6.QtGui import QColor, QFont, QFontMetricsF, QImage, QPainter, QPen, QPixmap
+from PySide6.QtCore import Qt, QPointF, QRectF, QThread, Signal
+from PySide6.QtGui import (
+    QColor,
+    QFont,
+    QFontMetricsF,
+    QPainter,
+    QPen,
+    QPixmap,
+    QPolygonF,
+)
 from PySide6.QtWidgets import (
     QApplication,
     QFileDialog,
@@ -22,10 +30,23 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from app.excel_loader import load_dictionary
-from app.generator import CLUE_CELL, GridGenerator
-from app.models import Placement
-from app.pdf_exporter import export_book_pdf
+import random
+
+from app.dictionary import load_dictionary
+from app.generator import CLUE_CELL
+from app.parallel import generate_best, worker_count
+from app.models import (
+    ARROW_DOWN,
+    ARROW_DOWN_RIGHT,
+    ARROW_RIGHT,
+    ARROW_RIGHT_DOWN,
+    Placement,
+)
+
+BLUE = QColor("#15317E")
+RED = QColor("#EF3340")
+CLUE_BG = QColor("#FDE9E9")
+TEXT_DARK = QColor("#17191F")
 
 
 class GridWidget(QWidget):
@@ -34,7 +55,7 @@ class GridWidget(QWidget):
         self.grid: list[list[str | None]] = []
         self.placements: list[Placement] = []
         self.show_answers = True
-        self.setMinimumSize(600, 600)
+        self.setMinimumSize(520, 640)
 
     def set_grid(
         self,
@@ -65,7 +86,7 @@ class GridWidget(QWidget):
             painter.drawText(
                 target,
                 Qt.AlignCenter,
-                "Importez un fichier Excel puis générez une grille",
+                "Importez un dictionnaire puis générez une grille",
             )
             painter.restore()
             return
@@ -73,92 +94,212 @@ class GridWidget(QWidget):
         clue_map: dict[tuple[int, int], list[Placement]] = defaultdict(list)
         for placement in self.placements:
             clue_map[(placement.clue_row, placement.clue_col)].append(placement)
+        for values in clue_map.values():
+            values.sort(key=lambda p: (p.row, p.col, not p.horizontal))
 
-        size = len(self.grid)
-        margin = 18
+        rows = len(self.grid)
+        cols = len(self.grid[0])
+        margin = 14
         cell = min(
-            (target.width() - 2 * margin) / size,
-            (target.height() - 2 * margin) / size,
+            (target.width() - 2 * margin) / cols,
+            (target.height() - 2 * margin) / rows,
         )
-        total = cell * size
-        left = target.x() + (target.width() - total) / 2
-        top = target.y() + (target.height() - total) / 2
+        left = target.x() + (target.width() - cell * cols) / 2
+        top = target.y() + (target.height() - cell * rows) / 2
 
-        for row in range(size):
-            for col in range(size):
+        arrow_jobs: list[tuple[QRectF, QRectF, str]] = []
+        for row in range(rows):
+            for col in range(cols):
                 rect = QRectF(left + col * cell, top + row * cell, cell, cell)
                 value = self.grid[row][col]
 
                 if value == CLUE_CELL:
-                    painter.setPen(QPen(QColor("#EF3340"), 1.2))
-                    painter.setBrush(QColor("#FFE8E8"))
-                    painter.drawRect(rect)
-                    self._draw_definition(
-                        painter,
-                        rect,
-                        clue_map.get((row, col), []),
-                        cell,
-                    )
+                    clues = clue_map.get((row, col), [])
+                    zones = self._draw_clue_cell(painter, rect, clues, cell)
+                    for placement, zone in zip(clues[:2], zones):
+                        arrow_jobs.append((rect, zone, placement.arrow))
                     continue
 
-                painter.setPen(QPen(QColor("#15317E"), 1.1))
-                painter.setBrush(QColor("#FFFFFF") if value else QColor("#FFFFFF"))
+                painter.setPen(QPen(BLUE, max(1.0, cell * 0.022)))
+                painter.setBrush(QColor("#FFFFFF"))
                 painter.drawRect(rect)
 
                 if value and show_answers:
-                    painter.setPen(QColor("#17191F"))
-                    painter.setFont(
-                        QFont("Segoe UI", max(8, int(cell * 0.38)), QFont.Bold)
-                    )
+                    painter.setPen(TEXT_DARK)
+                    letter_font = QFont("Segoe UI")
+                    letter_font.setBold(True)
+                    # Taille en pixels : indépendante du DPI (écran ou PDF).
+                    letter_font.setPixelSize(max(8, int(cell * 0.52)))
+                    painter.setFont(letter_font)
                     painter.drawText(rect, Qt.AlignCenter, value)
 
+        # Les flèches débordent sur les cases voisines : deuxième passe pour
+        # qu'elles ne soient pas recouvertes.
+        for rect, zone, arrow in arrow_jobs:
+            self._draw_arrow(painter, rect, zone, arrow, cell)
+
         painter.restore()
+
+    # ------------------------------------------------------- cases définitions
+
+    def _draw_clue_cell(
+        self,
+        painter: QPainter,
+        rect: QRectF,
+        clues: list[Placement],
+        cell: float,
+    ) -> list[QRectF]:
+        painter.setPen(QPen(RED, max(1.0, cell * 0.025)))
+        if not clues:
+            painter.setBrush(BLUE)
+            painter.drawRect(rect)
+            return []
+        painter.setBrush(CLUE_BG)
+        painter.drawRect(rect)
+
+        halves: list[QRectF]
+        if len(clues) >= 2:
+            half = rect.height() / 2
+            halves = [
+                QRectF(rect.x(), rect.y(), rect.width(), half),
+                QRectF(rect.x(), rect.y() + half, rect.width(), half),
+            ]
+            painter.setPen(QPen(RED, max(0.8, cell * 0.015)))
+            painter.drawLine(
+                QPointF(rect.x(), rect.y() + half),
+                QPointF(rect.right(), rect.y() + half),
+            )
+        else:
+            halves = [rect]
+
+        for placement, zone in zip(clues[:2], halves):
+            self._draw_definition(painter, zone, placement.definition, cell)
+        return halves
 
     def _draw_definition(
         self,
         painter: QPainter,
-        rect: QRectF,
-        placements: list[Placement],
+        zone: QRectF,
+        text: str,
         cell: float,
     ) -> None:
-        if not placements:
+        if not text:
             return
-
-        parts = []
-        for placement in placements[:2]:
-            arrow = "→" if placement.horizontal else "↓"
-            parts.append(f"{placement.definition}\n{arrow}")
-        text = "\n".join(parts)
-
         painter.save()
         painter.setPen(QColor("#D71920"))
 
-        pixel_size = max(5, int(cell * 0.16))
+        pixel_size = max(6, int(cell * 0.17))
         font = QFont("Segoe UI")
         font.setBold(True)
         font.setPixelSize(pixel_size)
-        painter.setFont(font)
 
-        available = rect.adjusted(1.5, 1.5, -1.5, -1.5)
+        available = zone.adjusted(cell * 0.05, cell * 0.04, -cell * 0.09, -cell * 0.04)
         while pixel_size > 4:
+            font.setPixelSize(pixel_size)
             metrics = QFontMetricsF(font)
             bounds = metrics.boundingRect(
                 available,
                 Qt.TextWordWrap | Qt.AlignCenter,
                 text,
             )
-            if bounds.height() <= available.height():
+            if (
+                bounds.height() <= available.height()
+                and bounds.width() <= available.width() + 0.5
+            ):
                 break
             pixel_size -= 1
-            font.setPixelSize(pixel_size)
-            painter.setFont(font)
 
-        painter.drawText(
-            available,
-            Qt.TextWordWrap | Qt.AlignCenter,
-            text,
-        )
+        painter.setFont(font)
+        painter.drawText(available, Qt.TextWordWrap | Qt.AlignCenter, text)
         painter.restore()
+
+    def _draw_arrow(
+        self,
+        painter: QPainter,
+        rect: QRectF,
+        zone: QRectF,
+        arrow: str,
+        cell: float,
+    ) -> None:
+        painter.save()
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(RED)
+        size = cell * 0.10
+
+        def head(tip: QPointF, direction: str) -> None:
+            if direction == "right":
+                points = [
+                    tip,
+                    QPointF(tip.x() - size, tip.y() - size * 0.7),
+                    QPointF(tip.x() - size, tip.y() + size * 0.7),
+                ]
+            else:  # down
+                points = [
+                    tip,
+                    QPointF(tip.x() - size * 0.7, tip.y() - size),
+                    QPointF(tip.x() + size * 0.7, tip.y() - size),
+                ]
+            painter.drawPolygon(QPolygonF(points))
+
+        pen = QPen(RED, max(1.2, cell * 0.03))
+
+        if arrow == ARROW_RIGHT:
+            head(QPointF(rect.right() + size, zone.center().y()), "right")
+        elif arrow == ARROW_DOWN:
+            head(QPointF(rect.center().x(), rect.bottom() + size), "down")
+        elif arrow == ARROW_DOWN_RIGHT:
+            # sort par le bas, puis tourne vers la droite
+            painter.setPen(pen)
+            x = rect.x() + rect.width() * 0.22
+            y = rect.bottom() + cell * 0.28
+            painter.drawLine(QPointF(x, rect.bottom()), QPointF(x, y))
+            painter.drawLine(QPointF(x, y), QPointF(x + cell * 0.2, y))
+            painter.setPen(Qt.NoPen)
+            head(QPointF(x + cell * 0.2 + size, y), "right")
+        elif arrow == ARROW_RIGHT_DOWN:
+            # sort par la droite, puis tourne vers le bas
+            painter.setPen(pen)
+            y = rect.y() + rect.height() * 0.22
+            x = rect.right() + cell * 0.28
+            painter.drawLine(QPointF(rect.right(), y), QPointF(x, y))
+            painter.drawLine(QPointF(x, y), QPointF(x, y + cell * 0.2))
+            painter.setPen(Qt.NoPen)
+            head(QPointF(x, y + cell * 0.2 + size), "down")
+        painter.restore()
+
+
+class GenerationWorker(QThread):
+    finished_with_result = Signal(object, object, object)
+    failed = Signal(str)
+
+    def __init__(
+        self,
+        entries: list,
+        width: int,
+        height: int,
+        seconds: float,
+        seed: int,
+    ) -> None:
+        super().__init__()
+        self.entries = entries
+        self.width = width
+        self.height = height
+        self.seconds = seconds
+        self.seed = seed
+
+    def run(self) -> None:
+        try:
+            grid, placements, stats = generate_best(
+                self.entries,
+                width=self.width,
+                height=self.height,
+                seconds=self.seconds,
+                seed_base=self.seed,
+            )
+        except Exception as exc:
+            self.failed.emit(str(exc))
+            return
+        self.finished_with_result.emit(grid, placements, stats)
 
 
 class MainWindow(QMainWindow):
@@ -167,6 +308,7 @@ class MainWindow(QMainWindow):
         self.entries = []
         self.placements: list[Placement] = []
         self.illustration_path = ""
+        self.worker: GenerationWorker | None = None
 
         self.setWindowTitle("Mots Fléchés Studio")
         self.resize(1380, 860)
@@ -178,7 +320,7 @@ class MainWindow(QMainWindow):
 
         header = QHBoxLayout()
         self.title_edit = QLineEdit("Mots Fléchés Studio")
-        self.title_edit.setMinimumWidth(260)
+        self.title_edit.setMinimumWidth(240)
         header.addWidget(self.title_edit)
         header.addStretch()
 
@@ -186,18 +328,25 @@ class MainWindow(QMainWindow):
         image_button.clicked.connect(self.choose_illustration)
         header.addWidget(image_button)
 
-        import_button = QPushButton("Importer Excel")
-        import_button.clicked.connect(self.import_excel)
+        import_button = QPushButton("Importer dictionnaire")
+        import_button.clicked.connect(self.import_dictionary)
         header.addWidget(import_button)
 
-        self.size_spin = QSpinBox()
-        self.size_spin.setRange(10, 40)
-        self.size_spin.setValue(20)
-        header.addWidget(self.size_spin)
+        header.addWidget(QLabel("Colonnes"))
+        self.width_spin = QSpinBox()
+        self.width_spin.setRange(6, 16)
+        self.width_spin.setValue(8)
+        header.addWidget(self.width_spin)
 
-        generate_button = QPushButton("Générer")
-        generate_button.clicked.connect(self.generate)
-        header.addWidget(generate_button)
+        header.addWidget(QLabel("Lignes"))
+        self.height_spin = QSpinBox()
+        self.height_spin.setRange(6, 20)
+        self.height_spin.setValue(13)
+        header.addWidget(self.height_spin)
+
+        self.generate_button = QPushButton("Générer")
+        self.generate_button.clicked.connect(self.generate)
+        header.addWidget(self.generate_button)
 
         toggle_button = QPushButton("Afficher / masquer réponses")
         toggle_button.clicked.connect(self.toggle_answers)
@@ -239,6 +388,7 @@ class MainWindow(QMainWindow):
             QListWidget::item { padding:5px 3px; }
             QPushButton { background:#5B5BD6; color:white; border:none; border-radius:9px; padding:9px 14px; font-weight:600; }
             QPushButton:hover { background:#4949BF; }
+            QPushButton:disabled { background:#B9B9E3; }
             QSpinBox, QLineEdit { background:white; border:1px solid #D6DAE3; border-radius:8px; padding:7px; }
             """
         )
@@ -266,12 +416,12 @@ class MainWindow(QMainWindow):
             )
             self.illustration_preview.setText("")
 
-    def import_excel(self) -> None:
+    def import_dictionary(self) -> None:
         path, _ = QFileDialog.getOpenFileName(
             self,
             "Importer un dictionnaire",
             "",
-            "Excel (*.xlsx)",
+            "Dictionnaires (*.csv *.xlsx)",
         )
         if not path:
             return
@@ -282,53 +432,93 @@ class MainWindow(QMainWindow):
             QMessageBox.critical(self, "Erreur d'import", str(exc))
             return
 
-        self.words_list.clear()
+        self.refresh_word_list()
         self.definitions_list.clear()
-        for entry in self.entries:
-            self.words_list.addItem(entry.word)
-            self.definitions_list.addItem(f"{entry.word} — {entry.definition}")
-        self.statusBar().showMessage(f"{len(self.entries)} mots importés")
+        definitions = sum(len(entry.definitions) for entry in self.entries)
+        self.statusBar().showMessage(
+            f"{len(self.entries)} mots importés ({definitions} définitions)"
+        )
+
+    def refresh_word_list(self) -> None:
+        self.words_list.clear()
+        for entry in sorted(self.entries, key=lambda e: (-e.placed, e.word)):
+            mark = "✓" if entry.placed else "•"
+            count = len(entry.definitions)
+            self.words_list.addItem(f"{mark}  {entry.word}  ({count} déf.)")
 
     def generate(self) -> None:
         if not self.entries:
             QMessageBox.information(
                 self,
                 "Dictionnaire requis",
-                "Importez d'abord un fichier Excel.",
+                "Importez d'abord un dictionnaire (CSV ou Excel).",
             )
             return
+        if self.worker is not None:
+            return
 
-        QApplication.setOverrideCursor(Qt.WaitCursor)
-        try:
-            generator = GridGenerator(size=self.size_spin.value(), seconds=12.0)
-            grid, self.placements = generator.generate(self.entries)
-        finally:
-            QApplication.restoreOverrideCursor()
+        self.generate_button.setEnabled(False)
+        cores = worker_count()
+        self.statusBar().showMessage(
+            f"Génération en cours… ({cores} recherche(s) en parallèle)"
+        )
+        self.worker = GenerationWorker(
+            self.entries,
+            width=self.width_spin.value(),
+            height=self.height_spin.value(),
+            # Plafond, pas un coût : la recherche s'arrête dès qu'une grille
+            # est pleine. Être généreux ne ralentit pas les machines rapides
+            # et sauve les lentes.
+            seconds=25.0,
+            seed=random.randrange(1_000_000),
+        )
+        self.worker.finished_with_result.connect(self.on_generated)
+        self.worker.failed.connect(self.on_generation_failed)
+        self.worker.finished.connect(self.on_worker_done)
+        self.worker.start()
 
-        self.grid_widget.set_grid(grid, self.placements)
+    def on_generation_failed(self, message: str) -> None:
+        self.statusBar().showMessage(f"Échec de la génération : {message}")
 
-        self.words_list.clear()
-        for entry in self.entries:
-            self.words_list.addItem(f"{'✓' if entry.placed else '•'}  {entry.word}")
+    def on_generated(self, grid, placements, stats) -> None:
+        self.placements = placements
+        self.grid_widget.set_grid(grid, placements)
+        self.refresh_word_list()
 
         self.definitions_list.clear()
         for placement in sorted(
-            self.placements,
+            placements,
             key=lambda item: (item.clue_row, item.clue_col, not item.horizontal),
         ):
             arrow = "→" if placement.horizontal else "↓"
-            self.definitions_list.addItem(f"{arrow}  {placement.definition}")
+            self.definitions_list.addItem(
+                f"{arrow}  {placement.definition}  [{placement.word}]"
+            )
 
-        placed = sum(entry.placed for entry in self.entries)
-        self.statusBar().showMessage(
-            f"{placed} mots placés sur {len(self.entries)}"
-        )
+        if stats.get("complete"):
+            message = (
+                f"Grille pleine : {stats['words']} mots, "
+                f"remplissage {stats['fill']}%"
+            )
+        else:
+            message = (
+                f"Grille partielle : {stats.get('words', 0)} mots, "
+                f"remplissage {stats.get('fill', 0)}% — "
+                "réessayez ou enrichissez le dictionnaire"
+            )
+        self.statusBar().showMessage(message)
+
+    def on_worker_done(self) -> None:
+        self.worker = None
+        self.generate_button.setEnabled(True)
 
     def toggle_answers(self) -> None:
         self.grid_widget.show_answers = not self.grid_widget.show_answers
         self.grid_widget.update()
 
     def export_pdf(self) -> None:
+        from app.pdf_exporter import export_book_pdf
+
         if not self.grid_widget.grid or not self.placements:
             QMessageBox.information(
                 self,

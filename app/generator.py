@@ -15,6 +15,7 @@ import random
 import time
 from dataclasses import dataclass
 
+from app.mask_score import score_mask
 from app.models import (
     ARROW_DOWN,
     ARROW_DOWN_RIGHT,
@@ -211,11 +212,22 @@ class ArrowGridGenerator:
         filled = sum(
             1 for row in grid for value in row if value is not None
         )
+        # Score du masque retenu (observation seule pour l'instant : la
+        # recherche ne s'en sert pas encore).
+        try:
+            mask = score_mask(layout, self.lengths)
+            penalty = mask.total
+            penalty_quality = mask.quality
+        except (SystemError, TypeError):
+            penalty = penalty_quality = -1
+
         self.last_stats = {
             "complete": complete,
             "words": len(placements),
             "fill": round(100.0 * filled / total_cells, 1),
             "layouts": layouts_tried,
+            "penalty": penalty,
+            "penalty_quality": penalty_quality,
         }
         return grid, placements
 

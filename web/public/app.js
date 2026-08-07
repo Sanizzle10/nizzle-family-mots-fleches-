@@ -126,7 +126,11 @@ function rendre() {
               selectionner(slot.row, slot.col, slot.horizontal ? "h" : "v");
             });
             div.appendChild(slotEl);
-            div.appendChild(fleche(slot.arrow, i, slots.length));
+            // Case double : les icônes dans les définitions suffisent, les
+            // flèches externes ajoutaient de la confusion.
+            if (slots.length === 1) {
+              div.appendChild(fleche(slot.arrow, i, 1));
+            }
           });
         } else {
           div.className = "case deco";

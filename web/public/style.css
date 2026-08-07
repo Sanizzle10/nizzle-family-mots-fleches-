@@ -65,12 +65,16 @@ body {
   margin-top: .1em;
 }
 
-/* ---- rails latéraux : caricatures de footballeurs (PNG fournis) ---- */
+/* ---- rails latéraux : caricatures de footballeurs (PNG fournis).
+       Zigzag façon collage : à gauche, les impairs collés au bord de
+       l'écran, les pairs rapprochés du cadre rouge — miroir à droite. ---- */
 .rail {
   position: fixed;
   top: 0;
   bottom: 0;
-  width: 130px;
+  width: 185px;
+  display: flex;
+  flex-direction: column;
   pointer-events: none;
   z-index: 0;
   overflow: hidden;
@@ -80,16 +84,32 @@ body {
 .rail-droite { right: 0; }
 
 .rail img {
-  display: block;
   width: 115px;
-  margin: 14px auto -8px;
+  margin: 12px 4px -6px;
   filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .35));
 }
 
-.rail img:nth-child(odd) { transform: rotate(-5deg) translateX(-6px); }
-.rail img:nth-child(even) { transform: rotate(4deg) translateX(8px); }
+.rail-gauche img:nth-child(odd) {
+  align-self: flex-start;
+  transform: rotate(-5deg);
+}
 
-@media (max-width: 1100px) {
+.rail-gauche img:nth-child(even) {
+  align-self: flex-end;
+  transform: rotate(4deg);
+}
+
+.rail-droite img:nth-child(odd) {
+  align-self: flex-end;
+  transform: rotate(5deg);
+}
+
+.rail-droite img:nth-child(even) {
+  align-self: flex-start;
+  transform: rotate(-4deg);
+}
+
+@media (max-width: 1280px) {
   .rail { display: none; }
 }
 

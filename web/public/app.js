@@ -112,15 +112,22 @@ function rendre() {
           slots.forEach((slot, i) => {
             const slotEl = document.createElement("div");
             slotEl.className = "slot";
-            if (slot.text.length > 55) slotEl.classList.add("tres-long");
-            else if (slot.text.length > 32) slotEl.classList.add("long");
+            // À deux dans la case, chaque définition a moitié moins de
+            // place : la police se réduit plus tôt.
+            const [long, tresLong] = slots.length === 2 ? [24, 38] : [32, 55];
+            if (slot.text.length > tresLong) slotEl.classList.add("tres-long");
+            else if (slot.text.length > long) slotEl.classList.add("long");
+            // Icône et texte dans un même bloc en ligne : sinon la flexbox
+            // de la case en fait deux colonnes et le texte déborde.
+            const contenu = document.createElement("span");
             if (slots.length === 2) {
               const dirEl = document.createElement("span");
               dirEl.className = "dir";
               dirEl.textContent = ICONE_SENS[slot.arrow];
-              slotEl.appendChild(dirEl);
+              contenu.appendChild(dirEl);
             }
-            slotEl.appendChild(document.createTextNode(slot.text));
+            contenu.appendChild(document.createTextNode(slot.text));
+            slotEl.appendChild(contenu);
             slotEl.title = slot.text;
             slotEl.addEventListener("click", () => {
               selectionner(slot.row, slot.col, slot.horizontal ? "h" : "v");
@@ -144,7 +151,22 @@ function rendre() {
     }
   }
   ajusterTaille();
+  ajusterDebordements();
   rafraichir();
+}
+
+function ajusterDebordements() {
+  // Les classes de police couvrent presque tout ; pour les définitions
+  // sans variante courte au lexique, on réduit finement jusqu'à tenir.
+  for (const slot of grilleEl.querySelectorAll(".slot")) {
+    slot.style.fontSize = "";
+    let taille = parseFloat(getComputedStyle(slot).fontSize);
+    let garde = 8;
+    while (slot.scrollHeight > slot.clientHeight + 1 && garde-- > 0) {
+      taille -= 0.4;
+      slot.style.fontSize = `${taille}px`;
+    }
+  }
 }
 
 function celluleEl(r, c) {
@@ -271,8 +293,11 @@ function ajusterTaille() {
   if (!data) return;
   const largeur = Math.min(window.innerWidth - 90, 900);
   const hauteur = window.innerHeight - 190;
+  // Plancher à 56 px : en dessous, la taille de police minimale du
+  // navigateur (~6 px) casse la proportionnalité et coupe les définitions.
+  // Les grands formats défilent, comme un magazine qu'on parcourt.
   const taille = Math.max(
-    30,
+    56,
     Math.min(64, Math.floor(largeur / data.width), Math.floor(hauteur / data.height))
   );
   grilleEl.style.setProperty("--cell", `${taille}px`);
@@ -337,6 +362,7 @@ async function demarrer() {
   document.addEventListener("keydown", surTouche);
   window.addEventListener("resize", () => {
     ajusterTaille();
+    ajusterDebordements();
   });
 }
 

@@ -154,19 +154,20 @@ body {
   text-align: center;
   color: var(--rouge);
   font-weight: 700;
-  line-height: 1.05;
+  line-height: 1.0;
   font-size: calc(var(--cell) * .148);
-  padding: 1px 2px;
+  padding: 0 1px;
   cursor: pointer;
   overflow: hidden;
+  hyphens: auto;
 }
 
 /* petite flèche directionnelle devant chaque définition d'une case double */
 .slot .dir {
-  font-size: 1.25em;
+  font-size: 1.1em;
   line-height: 1;
-  margin-right: .25em;
-  flex-shrink: 0;
+  margin-right: .15em;
+  vertical-align: -.05em;
 }
 
 .slot.long { font-size: calc(var(--cell) * .125); }

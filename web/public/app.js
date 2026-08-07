@@ -289,16 +289,32 @@ function basculerSolutions(actif) {
 function ajusterTaille() {
   const { data } = etat;
   if (!data) return;
-  const largeur = Math.min(window.innerWidth - 90, 900);
-  const hauteur = window.innerHeight - 190;
-  // Plancher à 56 px : en dessous, la taille de police minimale du
-  // navigateur (~6 px) casse la proportionnalité et coupe les définitions.
-  // Les grands formats défilent, comme un magazine qu'on parcourt.
+  const telephone = window.innerWidth < 600;
+  const marge = telephone ? 26 : 90;
+  const largeur = Math.min(window.innerWidth - marge, 900);
+  const hauteur = window.innerHeight - (telephone ? 150 : 190);
+  // Plancher : en dessous, les définitions ne tiennent plus (la passe
+  // ajusterDebordements compense sur téléphone). Les grands formats
+  // défilent, comme un magazine qu'on parcourt.
   const taille = Math.max(
-    56,
+    telephone ? 40 : 56,
     Math.min(64, Math.floor(largeur / data.width), Math.floor(hauteur / data.height))
   );
   grilleEl.style.setProperty("--cell", `${taille}px`);
+  positionnerRails();
+}
+
+function positionnerRails() {
+  // Centre la bande de zigzag entre le bord de l'écran et le cadre rouge.
+  const plateau = document.querySelector(".plateau");
+  const espace = Math.floor(plateau.getBoundingClientRect().left);
+  // 178 px = largeur de la bande de zigzag (image 115 + décalage 63)
+  const centrage = Math.max(0, (espace - 178) / 2);
+  for (const rail of document.querySelectorAll(".rail")) {
+    rail.classList.toggle("visible", espace >= 150);
+    rail.style.width = `${espace}px`;
+    rail.style.padding = `0 ${centrage}px`;
+  }
 }
 
 async function chargerGrille(id) {

@@ -72,13 +72,17 @@ body {
   position: fixed;
   top: 0;
   bottom: 0;
-  width: 185px;
-  display: flex;
+  display: none;
   flex-direction: column;
   pointer-events: none;
   z-index: 0;
   overflow: hidden;
+  /* largeur et centrage posés en JS : espace bord d'écran <-> cadre
+     rouge (un padding en % se calculerait sur la fenêtre, pas le rail) */
+  box-sizing: border-box;
 }
+
+.rail.visible { display: flex; }
 
 .rail-gauche { left: 0; }
 .rail-droite { right: 0; }
@@ -109,8 +113,23 @@ body {
   transform: rotate(-4deg);
 }
 
-@media (max-width: 1280px) {
-  .rail { display: none; }
+/* ---- téléphone : plateau allégé, la grille tient dans l'écran ---- */
+@media (max-width: 700px) {
+  body { padding: 8px 4px; }
+
+  .plateau {
+    border-width: 5px;
+    padding: 8px 6px 6px;
+  }
+
+  .bandeau {
+    gap: 8px;
+    padding: 6px 8px;
+    margin-bottom: 8px;
+  }
+
+  .logo { font-size: 1.15rem; }
+  .bandeau-champs { font-size: .75rem; gap: 8px; }
 }
 
 .bandeau-champs {

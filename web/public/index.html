@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mots Fléchés Foot</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="plateau">
+  <header class="bandeau">
+    <h1 class="logo">GRILLÉ<span class="logo-foot">FOOT</span></h1>
+    <div class="bandeau-champs">
+      <span class="champ"><b>LE :</b> <span id="date-jour" class="pointille"></span></span>
+      <span class="champ"><b>GRILLE :</b>
+        <select id="choix-grille" aria-label="Choisir une grille"></select>
+      </span>
+      <button id="sens" class="bouton-sens" title="Sens de saisie (clic sur la case sélectionnée pour basculer)">
+        Saisie : <span id="sens-libelle">→ horizontal</span>
+      </button>
+    </div>
+  </header>
+  <main>
+    <div id="grille" class="grille" tabindex="0" aria-label="Grille de mots fléchés"></div>
+  </main>
+  <footer class="pied">un jeu maison — thème football</footer>
+</div>
+<script type="module" src="app.js"></script>
+</body>
+</html>

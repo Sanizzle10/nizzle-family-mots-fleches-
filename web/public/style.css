@@ -1,0 +1,192 @@
+/* Look & feel de la maquette « Grillé » : fond bleu roi, cadre rouge,
+   plateau blanc, cases définitions rose pâle à texte rouge, traits bleus. */
+
+:root {
+  --bleu: #23378f;
+  --bleu-trait: #2a3a96;
+  --rouge: #e3262a;
+  --rose: #f9ded8;
+  --blanc: #ffffff;
+  --selection: #fff3b8;
+  --selection-forte: #ffe066;
+  --cell: 56px; /* recalculé en JS selon la fenêtre */
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bleu);
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 18px 10px;
+}
+
+.plateau {
+  background: var(--blanc);
+  border: 10px solid var(--rouge);
+  border-radius: 4px;
+  padding: 14px 18px 10px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, .35);
+  max-width: 100%;
+}
+
+/* ---- bandeau façon LE / À / AVEC ---- */
+.bandeau {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  border: 3px solid var(--bleu);
+  padding: 8px 14px;
+  margin-bottom: 12px;
+}
+
+.logo {
+  color: var(--bleu);
+  font-size: 1.6rem;
+  font-weight: 900;
+  letter-spacing: .06em;
+  font-style: italic;
+}
+
+.logo-foot {
+  color: var(--rouge);
+  margin-left: .3em;
+}
+
+.bandeau-champs {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: .85rem;
+}
+
+.champ b { color: var(--bleu); text-transform: uppercase; }
+
+.pointille {
+  border-bottom: 2px dotted var(--rouge);
+  color: var(--rouge);
+  font-weight: 600;
+  padding: 0 .4em;
+}
+
+#choix-grille {
+  border: 2px solid var(--bleu);
+  color: var(--bleu);
+  font-weight: 600;
+  padding: 2px 6px;
+  background: var(--blanc);
+}
+
+.bouton-sens {
+  border: 2px solid var(--rouge);
+  background: var(--blanc);
+  color: var(--rouge);
+  font-weight: 700;
+  padding: 3px 10px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.bouton-sens:hover { background: var(--rose); }
+
+/* ---- grille ---- */
+.grille {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), var(--cell));
+  grid-template-rows: repeat(var(--rows), var(--cell));
+  border: 3px solid var(--bleu);
+  width: max-content;
+  margin: 0 auto;
+  outline: none;
+  user-select: none;
+}
+
+.case {
+  border: 1px solid var(--bleu-trait);
+  position: relative;
+  overflow: visible;
+}
+
+/* case lettre */
+.case.lettre {
+  background: var(--blanc);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(var(--cell) * .55);
+  font-weight: 700;
+  color: var(--bleu);
+}
+
+.case.lettre.mot-actif { background: var(--selection); }
+.case.lettre.case-active { background: var(--selection-forte); }
+.case.lettre.case-active::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border: 2px solid var(--rouge);
+  pointer-events: none;
+}
+
+/* case définition */
+.case.def {
+  background: var(--rose);
+  display: flex;
+  flex-direction: column;
+  cursor: default;
+}
+
+.slot {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--rouge);
+  font-weight: 700;
+  line-height: 1.05;
+  font-size: calc(var(--cell) * .148);
+  padding: 1px 2px;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.slot.long { font-size: calc(var(--cell) * .125); }
+.slot.tres-long { font-size: calc(var(--cell) * .105); line-height: 1; }
+
+.slot + .slot { border-top: 2px solid var(--rouge); }
+
+.slot:hover { background: #f4c9c0; }
+
+/* case décorative (aucune définition) : flamme */
+.case.deco {
+  background: var(--rose);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.case.deco svg { width: 45%; height: 45%; }
+
+/* ---- flèches : petits triangles rouges qui sortent de la case définition
+       vers la première lettre du mot ---- */
+.fleche {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.fleche svg { display: block; }
+
+.pied {
+  text-align: center;
+  color: var(--bleu);
+  font-size: .7rem;
+  font-style: italic;
+  margin-top: 8px;
+}

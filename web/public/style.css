@@ -215,7 +215,7 @@ body {
 
 .slot:hover { background: #f4c9c0; }
 
-/* case décorative (aucune définition) : flamme */
+/* case décorative (aucune définition) : ballon */
 .case.deco {
   background: var(--rose);
   display: flex;
@@ -223,7 +223,7 @@ body {
   justify-content: center;
 }
 
-.case.deco svg { width: 45%; height: 45%; }
+.case.deco img { width: 62%; height: 62%; object-fit: contain; }
 
 /* ---- flèches : petits triangles rouges qui sortent de la case définition
        vers la première lettre du mot ---- */

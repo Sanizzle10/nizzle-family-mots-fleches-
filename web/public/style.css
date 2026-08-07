@@ -159,7 +159,8 @@ body {
 .slot.long { font-size: calc(var(--cell) * .125); }
 .slot.tres-long { font-size: calc(var(--cell) * .105); line-height: 1; }
 
-.slot + .slot { border-top: 2px solid var(--rouge); }
+/* ~ et non + : les flèches (span) s'intercalent entre les slots dans le DOM */
+.slot ~ .slot { border-top: 2px solid var(--rouge); }
 
 .slot:hover { background: #f4c9c0; }
 

@@ -21,6 +21,7 @@ import datetime as dt
 import hashlib
 import json
 import random
+import re
 import sys
 from collections import Counter
 from pathlib import Path
@@ -38,6 +39,25 @@ LEXICON = REPO / "data" / "lexique_foot_master.csv"
 
 # Au-delà : la grille est écartée même pleine (structure ratée).
 PENALTY_CAP = {104: 13_000, 150: 20_000, 260: 60_000}
+
+
+# « Trois lettres qui... » : redondant à l'écran, la case donne déjà le
+# nombre de lettres. On retire le préfixe et la cheville qui le suit.
+_NOMBRES = (
+    "deux|trois|quatre|cinq|six|sept|huit|neuf|dix|onze|douze|treize"
+    "|quatorze|quinze"
+)
+_PREFIXE_LETTRES = re.compile(
+    rf"^\s*(?:{_NOMBRES})\s+lettres\s*(?:qui\s+|qu[''`]\s*|que\s+|et\s+|,\s*|:\s*)?",
+    re.IGNORECASE,
+)
+
+
+def nettoyer_definition(text: str) -> str:
+    reste = _PREFIXE_LETTRES.sub("", text, count=1).strip()
+    if not reste or reste == text:
+        return text
+    return reste[0].upper() + reste[1:]
 
 
 def parse_mix(text: str) -> list[tuple[int, int, int]]:
@@ -75,7 +95,7 @@ def pick_definitions(
         chosen.append(
             {
                 "placement": placement,
-                "text": definition.text,
+                "text": nettoyer_definition(definition.text),
                 "level": definition.level,
                 "display": entry.display,
             }

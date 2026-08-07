@@ -42,7 +42,7 @@ PENALTY_ARROW = 2000         # mot sans case définition atteignable, ou case
                              # définition surchargée (> 2 mots) — analogue du
                              # « mot non enclavé » de la thèse
 PENALTY_LENGTH_UNAVAILABLE = 1500  # [nous] aucune entrée de cette longueur
-PENALTY_DEAD_CLUE = 40       # [nous] case définition ne servant aucun mot
+PENALTY_DEAD_CLUE = 150      # [nous] case définition ne servant aucun mot
 
 # Amas de cases définitions (8-connexes) : table (taille, étendue max) de la
 # thèse, sous forme (étendue min, pénalité de base, pente par cran d'étendue).

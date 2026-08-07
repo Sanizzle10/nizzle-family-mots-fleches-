@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import multiprocessing as mp
 import os
+import time
 
 from app.generator import ArrowGridGenerator
 from app.models import Entry, Placement
@@ -96,26 +97,62 @@ def generate_best(
         for offset in range(count)
     ]
 
-    best: Result | None = None
+    def penalty_of(result: Result) -> int:
+        value = result[2].get("penalty")
+        if isinstance(value, int) and value >= 0:
+            return value
+        return 1 << 30
+
+    completes: list[Result] = []
+    best_partial: Result | None = None
     pool = None
     try:
         pool = mp.Pool(processes=count)
-        for result in pool.imap_unordered(_search, tasks):
+        iterator = pool.imap_unordered(_search, tasks)
+        # Garde-fou absolu : si un processus meurt (défaillances machine
+        # observées), l'itérateur ne doit pas bloquer indéfiniment.
+        hard_end = time.time() + seconds + 8.0
+        grace_end: float | None = None
+        received = 0
+        while received < len(tasks):
+            limit = hard_end if grace_end is None else min(hard_end, grace_end)
+            remaining = limit - time.time()
+            if remaining <= 0:
+                break
+            try:
+                result = iterator.next(timeout=remaining)
+            except mp.TimeoutError:
+                break
+            except Exception:
+                break
+            received += 1
             stats = result[2]
             if stats.get("complete"):
-                best = result
-                break
-            if best is None or stats.get("fill", 0) > best[2].get("fill", 0):
-                best = result
+                completes.append(result)
+                if grace_end is None:
+                    # Première grille pleine : on laisse une courte fenêtre
+                    # aux autres recherches, puis on garde la mieux notée.
+                    grace_end = time.time() + min(
+                        1.5, max(0.6, seconds * 0.08)
+                    )
+            elif (
+                best_partial is None
+                or stats.get("fill", 0) > best_partial[2].get("fill", 0)
+            ):
+                best_partial = result
     except Exception:
-        # Un incident dans un processus enfant ne doit pas perdre la main.
-        best = None
+        completes = []
+        best_partial = None
     finally:
         if pool is not None:
             pool.terminate()
             pool.join()
 
-    if best is None:
+    if completes:
+        best = min(completes, key=penalty_of)
+    elif best_partial is not None:
+        best = best_partial
+    else:
         best = _solo(entries, width, height, seconds, seed_base)
     mark_placed(entries, best[1])
     return best

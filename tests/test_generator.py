@@ -11,13 +11,15 @@ from app.models import (
     ARROW_RIGHT_DOWN,
 )
 
-LEXICON = Path(__file__).resolve().parent.parent / "data" / "lexique_foot_v0.csv"
+DATA = Path(__file__).resolve().parent.parent / "data"
+LEXICON = DATA / "lexique_foot_master.csv"
+SMALL_LEXICON = DATA / "lexique_foot_v0.csv"
 
 
 @pytest.fixture(scope="module")
 def entries():
     if not LEXICON.exists():
-        pytest.skip("lexique de développement absent")
+        pytest.skip("lexique maître absent")
     return load_dictionary(LEXICON)
 
 
@@ -55,12 +57,23 @@ def runs_of(grid, horizontal):
 def test_grid_is_complete(generated):
     generator, grid, placements = generated
     assert generator.last_stats["complete"], (
-        "la grille devrait être pleine avec le lexique de développement : "
+        "la grille devrait être pleine avec le dictionnaire complet : "
         f"{generator.last_stats}"
     )
     for row in grid:
         for value in row:
             assert value is not None
+
+
+def test_small_dictionary_still_fills():
+    """Le repli adaptatif doit préserver le remplissage même avec un
+    dictionnaire pauvre (337 mots)."""
+    if not SMALL_LEXICON.exists():
+        pytest.skip("lexique de développement absent")
+    small = load_dictionary(SMALL_LEXICON)
+    generator = ArrowGridGenerator(width=8, height=13, seconds=30.0, seed=42)
+    generator.generate(small)
+    assert generator.last_stats["complete"], generator.last_stats
 
 
 def test_every_run_is_a_placed_word(generated, entries):

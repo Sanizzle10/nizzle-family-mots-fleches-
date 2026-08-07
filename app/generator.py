@@ -11,6 +11,7 @@ Deux phases :
 
 from __future__ import annotations
 
+import os
 import random
 import time
 from dataclasses import dataclass
@@ -131,7 +132,10 @@ class ArrowGridGenerator:
         # l'instant — leur remplissage a besoin de tout le budget.
         cells_total = self.width * self.height
         scale = max(1.0, cells_total / 104.0)
-        max_climb_failures = 0 if cells_total > 180 else 2
+        # Seuil pilotable pour expérimenter l'optimisation sur les grands
+        # formats sans toucher au code.
+        climb_cutoff = int(os.environ.get("MFS_CLIMB_MAX_CELLS", "180"))
+        max_climb_failures = 0 if cells_total > climb_cutoff else 2
         climb_failures = 0
 
         while time.time() < deadline:
@@ -527,6 +531,9 @@ class ArrowGridGenerator:
 
         best = {"count": 0, "assigned": list(assigned)}
         nodes = 0
+        # Volontairement bas : dépassé, il vaut mieux redémarrer sur une
+        # autre structure que creuser (mesuré : l'augmenter à 75k fait
+        # tomber le 13x20 de 10/10 à 8/10 en supprimant les redémarrages).
         node_limit = 30000
 
         def backtrack() -> bool:

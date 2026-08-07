@@ -161,6 +161,14 @@ body {
   overflow: hidden;
 }
 
+/* petite flèche directionnelle devant chaque définition d'une case double */
+.slot .dir {
+  font-size: 1.25em;
+  line-height: 1;
+  margin-right: .25em;
+  flex-shrink: 0;
+}
+
 .slot.long { font-size: calc(var(--cell) * .125); }
 .slot.tres-long { font-size: calc(var(--cell) * .105); line-height: 1; }
 

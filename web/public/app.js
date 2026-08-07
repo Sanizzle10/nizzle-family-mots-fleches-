@@ -18,6 +18,18 @@ const etat = {
   solutions: false, // grille finalisée affichée (la saisie est conservée)
 };
 
+// right = →, right_down = ↴ (part à droite puis descend),
+// down = ↓, down_right = ↳ (descend puis part à droite)
+const ICONE_SENS = {
+  right: "→",
+  right_down: "↴",
+  down: "↓",
+  down_right: "↳",
+};
+
+// 0 = le mot part vers la droite, 1 = le mot part vers le bas
+const VERS_LE_BAS = { right: 0, right_down: 0, down: 1, down_right: 1 };
+
 const FLAMME =
   '<svg viewBox="0 0 24 24" fill="#e3262a">' +
   '<path d="M12 2c1 4-3 5-3 9a3 3 0 0 0 6 0c0-2-1-3-1-3 3 1 5 3 5 7' +
@@ -92,18 +104,29 @@ function rendre() {
         const clue = parClef.get(`${r},${c}`);
         if (clue) {
           div.className = "case def";
-          clue.slots.forEach((slot, i) => {
+          // Ordre géométrique : le mot qui part vers la droite en haut,
+          // celui qui descend en bas — l'œil associe la définition à son mot.
+          const slots = [...clue.slots].sort(
+            (a, b) => VERS_LE_BAS[a.arrow] - VERS_LE_BAS[b.arrow]
+          );
+          slots.forEach((slot, i) => {
             const slotEl = document.createElement("div");
             slotEl.className = "slot";
             if (slot.text.length > 55) slotEl.classList.add("tres-long");
             else if (slot.text.length > 32) slotEl.classList.add("long");
-            slotEl.textContent = slot.text;
+            if (slots.length === 2) {
+              const dirEl = document.createElement("span");
+              dirEl.className = "dir";
+              dirEl.textContent = ICONE_SENS[slot.arrow];
+              slotEl.appendChild(dirEl);
+            }
+            slotEl.appendChild(document.createTextNode(slot.text));
             slotEl.title = slot.text;
             slotEl.addEventListener("click", () => {
               selectionner(slot.row, slot.col, slot.horizontal ? "h" : "v");
             });
             div.appendChild(slotEl);
-            div.appendChild(fleche(slot.arrow, i, clue.slots.length));
+            div.appendChild(fleche(slot.arrow, i, slots.length));
           });
         } else {
           div.className = "case deco";

@@ -70,22 +70,38 @@ def parse_mix(text: str) -> list[tuple[int, int, int]]:
     return result
 
 
+# Répartition des grilles par niveau visé : surtout du facile (retour
+# joueur : le niveau 2 est déjà très dur).
+CIBLES_NIVEAU = [1] * 6 + [2] * 3 + [3]
+
+
 def pick_definitions(
     placements: list[Placement],
     by_word: dict[str, Entry],
     usage: Counter,
     rng: random.Random,
+    cible: int = 1,
 ) -> list[dict]:
-    """Choisit une définition par mot en équilibrant l'usage sur la banque."""
+    """Choisit une définition par mot : niveau visé d'abord, puis équilibre
+    d'usage sur la banque, puis registre « joueur » à égalité."""
     chosen = []
     for placement in placements:
         entry = by_word[placement.word]
-        floor = min(usage[(entry.word, i)] for i in range(len(entry.definitions)))
-        candidates = [
+        tous = list(range(len(entry.definitions)))
+        # Le niveau le plus proche de la cible (en dessous de préférence).
+        ecart = min(
+            abs(entry.definitions[i].level - cible)
+            + (0.5 if entry.definitions[i].level > cible else 0)
+            for i in tous
+        )
+        du_niveau = [
             i
-            for i in range(len(entry.definitions))
-            if usage[(entry.word, i)] == floor
+            for i in tous
+            if abs(entry.definitions[i].level - cible)
+            + (0.5 if entry.definitions[i].level > cible else 0) == ecart
         ]
+        floor = min(usage[(entry.word, i)] for i in du_niveau)
+        candidates = [i for i in du_niveau if usage[(entry.word, i)] == floor]
         joueur = [
             i for i in candidates if entry.definitions[i].register == "joueur"
         ]
@@ -109,6 +125,7 @@ def grid_to_json(
     placements: list[Placement],
     chosen: list[dict],
     penalty: int,
+    difficulty: int,
 ) -> dict:
     height, width = len(grid), len(grid[0])
     solution = [
@@ -138,10 +155,10 @@ def grid_to_json(
         slots.sort(key=lambda s: not s["horizontal"])
         clues.append({"row": row, "col": col, "slots": slots})
 
-    levels = [item["level"] for item in chosen]
-    mean = sum(levels) / len(levels)
-    difficulty = 1 if mean <= 1.4 else (2 if mean <= 2.1 else 3)
-
+    # La difficulté affichée est la CIBLE du tirage, pas la moyenne obtenue :
+    # 39 % des mots n'ont pas de définition de niveau 1, la moyenne d'une
+    # grille facile plafonne donc vers 1,5 — mais c'est bien la grille la
+    # plus facile possible avec le lexique actuel.
     return {
         "id": grid_id,
         "width": width,
@@ -241,8 +258,11 @@ def main() -> None:
         )
         for seq, (grid, placements, penalty) in enumerate(produced, start=1):
             grid_id = f"{width}x{height}-{seq:03d}"
-            chosen = pick_definitions(placements, by_word, usage, rng)
-            data = grid_to_json(grid_id, grid, placements, chosen, penalty)
+            cible = CIBLES_NIVEAU[(seq - 1) % len(CIBLES_NIVEAU)]
+            chosen = pick_definitions(placements, by_word, usage, rng, cible)
+            data = grid_to_json(
+                grid_id, grid, placements, chosen, penalty, cible
+            )
             path = grids_dir / f"{grid_id}.json"
             path.write_text(
                 json.dumps(data, ensure_ascii=False, separators=(",", ":")),

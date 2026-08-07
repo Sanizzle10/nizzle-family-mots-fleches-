@@ -6,6 +6,7 @@ const grilleEl = document.getElementById("grille");
 const choixEl = document.getElementById("choix-grille");
 const sensBtn = document.getElementById("sens");
 const sensLibelle = document.getElementById("sens-libelle");
+const solutionsBtn = document.getElementById("solutions");
 
 const etat = {
   data: null,      // JSON de la grille
@@ -14,6 +15,7 @@ const etat = {
   cellWords: [],   // cellWords[r][c] = {h: index|null, v: index|null}
   sel: null,       // {r, c}
   dir: "h",
+  solutions: false, // grille finalisée affichée (la saisie est conservée)
 };
 
 const FLAMME =
@@ -128,11 +130,14 @@ function rafraichir() {
     for (let c = 0; c < data.width; c += 1) {
       if (data.solution[r][c] === "#") continue;
       const el = celluleEl(r, c);
-      el.textContent = etat.values[r][c];
+      el.textContent = etat.solutions
+        ? data.solution[r][c]
+        : etat.values[r][c];
+      el.classList.toggle("revele", etat.solutions);
       el.classList.remove("mot-actif", "case-active");
     }
   }
-  if (!etat.sel) return;
+  if (etat.solutions || !etat.sel) return;
   const mot = motCourant();
   if (mot) {
     for (const [r, c] of mot.cells) celluleEl(r, c).classList.add("mot-actif");
@@ -199,6 +204,7 @@ function avancerDansMot(sens) {
 }
 
 function surTouche(event) {
+  if (etat.solutions) return;
   if (!etat.sel || event.ctrlKey || event.metaKey || event.altKey) return;
   const { key } = event;
   if (key === "ArrowRight") deplacer(0, 1);
@@ -227,6 +233,12 @@ function surTouche(event) {
   event.preventDefault();
 }
 
+function basculerSolutions(actif) {
+  etat.solutions = actif;
+  solutionsBtn.textContent = actif ? "Masquer les solutions" : "Solutions";
+  solutionsBtn.classList.toggle("actif", actif);
+}
+
 function ajusterTaille() {
   const { data } = etat;
   if (!data) return;
@@ -243,6 +255,7 @@ async function chargerGrille(id) {
   const info = etat.index.grids.find((g) => g.id === id);
   const data = await (await fetch(`data/${info.file}`)).json();
   construireModele(data);
+  basculerSolutions(false);
   rendre();
   const url = new URL(window.location);
   url.searchParams.set("g", id);
@@ -289,6 +302,10 @@ async function demarrer() {
   sensBtn.addEventListener("click", () => {
     fixerSens(etat.dir === "h" ? "v" : "h");
     grilleEl.focus({ preventScroll: true });
+  });
+  solutionsBtn.addEventListener("click", () => {
+    basculerSolutions(!etat.solutions);
+    rafraichir();
   });
   document.addEventListener("keydown", surTouche);
   window.addEventListener("resize", () => {

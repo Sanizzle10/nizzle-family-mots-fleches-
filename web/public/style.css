@@ -93,6 +93,11 @@ body {
 
 .bouton-sens:hover { background: var(--rose); }
 
+.bouton-sens.actif { background: var(--rouge); color: var(--blanc); }
+
+/* lettres révélées par le bouton Solutions */
+.case.lettre.revele { color: var(--rouge); }
+
 /* ---- grille ---- */
 .grille {
   display: grid;

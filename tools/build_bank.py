@@ -212,13 +212,28 @@ def pick_definitions(
 
         ecart = min(ecart_niveau(i) for i in tous)
         du_niveau = [i for i in tous if ecart_niveau(i) == ecart]
-        # 3. Rotation d'usage sur la banque, registre joueur à égalité.
-        floor = min(usage[(entry.word, i)] for i in du_niveau)
-        candidates = [i for i in du_niveau if usage[(entry.word, i)] == floor]
-        joueur = [
-            i for i in candidates if entry.definitions[i].register == "joueur"
-        ]
-        index = rng.choice(joueur or candidates)
+        # 3. Grilles faciles : la clarté prime — registre factuel (pays,
+        # club, grammaire) AVANT la rotation d'usage. Grilles relevées :
+        # rotation d'abord, humour « joueur » à égalité.
+        if cible == 1:
+            factuels = [
+                i for i in du_niveau
+                if entry.definitions[i].register == "factuel"
+            ]
+            bassin = factuels or du_niveau
+            floor = min(usage[(entry.word, i)] for i in bassin)
+            candidates = [i for i in bassin if usage[(entry.word, i)] == floor]
+            index = rng.choice(candidates)
+        else:
+            floor = min(usage[(entry.word, i)] for i in du_niveau)
+            candidates = [
+                i for i in du_niveau if usage[(entry.word, i)] == floor
+            ]
+            joueur = [
+                i for i in candidates
+                if entry.definitions[i].register == "joueur"
+            ]
+            index = rng.choice(joueur or candidates)
         usage[(entry.word, index)] += 1
         chosen.append(
             {

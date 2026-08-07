@@ -1,0 +1,14 @@
+Caricatures de footballeurs pour les rails latéraux.
+
+Nommage : joueur-01.png, joueur-02.png, ... jusqu'à joueur-24.png maximum.
+Les numéros impairs s'affichent à gauche, les pairs à droite, de haut en
+bas. Les fichiers absents sont ignorés sans erreur.
+
+Format recommandé :
+- PNG fond transparent (silhouette détourée)
+- portrait en pied, format vertical, ~600 x 900 px
+- poses variées (frappe, dribble, célébration, gardien...)
+
+Nombre : 10 minimum pour remplir les deux rails sur un écran classique,
+16 idéal pour la variété. Le site les incline alternativement, façon
+collage de la maquette.

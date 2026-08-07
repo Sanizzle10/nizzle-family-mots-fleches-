@@ -320,7 +320,23 @@ function grilleDuJour(index) {
   return index.dailyOrder[jours % index.dailyOrder.length];
 }
 
+function peuplerRails() {
+  // Caricatures de footballeurs sur les côtés (img/joueurs/joueur-NN.png,
+  // fournies par Nico) : les fichiers absents disparaissent sans bruit.
+  const gauche = document.querySelector(".rail-gauche");
+  const droite = document.querySelector(".rail-droite");
+  for (let i = 1; i <= 24; i += 1) {
+    const img = document.createElement("img");
+    img.src = `img/joueurs/joueur-${String(i).padStart(2, "0")}.png`;
+    img.alt = "";
+    img.loading = "lazy";
+    img.addEventListener("error", () => img.remove());
+    (i % 2 ? gauche : droite).appendChild(img);
+  }
+}
+
 async function demarrer() {
+  peuplerRails();
   document.getElementById("date-jour").textContent =
     new Date().toLocaleDateString("fr-FR");
   etat.index = await (await fetch("data/index.json")).json();

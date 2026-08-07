@@ -51,9 +51,46 @@ body {
   font-style: italic;
 }
 
-.logo-foot {
+.logo-family {
   color: var(--rouge);
-  margin-left: .3em;
+  margin-left: .25em;
+  font-size: .8em;
+}
+
+.logo-foot {
+  display: block;
+  color: var(--rouge);
+  font-size: .5em;
+  letter-spacing: .22em;
+  margin-top: .1em;
+}
+
+/* ---- rails latéraux : caricatures de footballeurs (PNG fournis) ---- */
+.rail {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 130px;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.rail-gauche { left: 0; }
+.rail-droite { right: 0; }
+
+.rail img {
+  display: block;
+  width: 115px;
+  margin: 14px auto -8px;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .35));
+}
+
+.rail img:nth-child(odd) { transform: rotate(-5deg) translateX(-6px); }
+.rail img:nth-child(even) { transform: rotate(4deg) translateX(8px); }
+
+@media (max-width: 1100px) {
+  .rail { display: none; }
 }
 
 .bandeau-champs {

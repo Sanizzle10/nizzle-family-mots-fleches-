@@ -186,6 +186,24 @@ function positionnerClavier() {
   clavierEl.style.top = `${etat.sel.r * taille + taille / 2}px`;
 }
 
+function centrerSurCase() {
+  // Ramène la case active dans la zone réellement visible : sur
+  // téléphone, le clavier virtuel recouvre la moitié basse de l'écran
+  // (visualViewport donne la fenêtre restante). On ne défile que si la
+  // case sort de la bande confortable — jamais pendant un simple swipe.
+  if (!etat.sel) return;
+  const rect = celluleEl(etat.sel.r, etat.sel.c).getBoundingClientRect();
+  const vv = window.visualViewport;
+  const haut = vv ? vv.offsetTop : 0;
+  const hauteur = vv ? vv.height : window.innerHeight;
+  const bandeHaute = haut + Math.min(150, hauteur * 0.22);
+  const bandeBasse = haut + hauteur - Math.min(130, hauteur * 0.28);
+  if (rect.top < bandeHaute || rect.bottom > bandeBasse) {
+    const cible = haut + hauteur * 0.38;
+    window.scrollBy({ top: rect.top - cible, behavior: "smooth" });
+  }
+}
+
 function ajusterDebordements() {
   // Les classes de police couvrent presque tout ; pour les définitions
   // sans variante courte au lexique, on réduit finement jusqu'à tenir.
@@ -230,6 +248,7 @@ function rafraichir() {
   }
   celluleEl(etat.sel.r, etat.sel.c).classList.add("case-active");
   positionnerClavier();
+  centrerSurCase();
 }
 
 function motCourant() {
@@ -685,6 +704,11 @@ async function demarrer() {
     ajusterTaille();
     ajusterDebordements();
   });
+  if (window.visualViewport) {
+    // Ouverture/fermeture du clavier virtuel : la fenêtre visible change
+    // de hauteur, on recentre sur la case active.
+    window.visualViewport.addEventListener("resize", centrerSurCase);
+  }
 }
 
 demarrer();

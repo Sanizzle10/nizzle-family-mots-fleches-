@@ -35,6 +35,10 @@ foi ; ce fichier en est la version lisible.
   libellé d'origine plutôt qu'un accord risqué.
 
 ### Corrections
+- **Téléphone : recentrage automatique sur la case où l'on écrit** — au
+  clic, à chaque lettre et à l'ouverture du clavier virtuel, la page
+  défile pour garder la case active visible au-dessus du clavier (et ne
+  bouge pas pendant un simple swipe).
 - **Téléphone : l'écran ne « remonte » plus à chaque lettre** (le champ
   du clavier virtuel suit désormais la case où l'on écrit).
 - Le catalogue restait affiché en permanence par-dessus la page (bloquant

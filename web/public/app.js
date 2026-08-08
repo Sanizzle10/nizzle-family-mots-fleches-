@@ -169,9 +169,21 @@ function rendre() {
       grilleEl.appendChild(div);
     }
   }
+  // Le champ clavier vit dans la grille (position absolue sur la case
+  // active) ; innerHTML l'a retiré, on le remet.
+  grilleEl.appendChild(clavierEl);
   ajusterTaille();
   ajusterDebordements();
   rafraichir();
+}
+
+function positionnerClavier() {
+  if (!etat.sel) return;
+  const taille = parseFloat(
+    getComputedStyle(grilleEl).getPropertyValue("--cell")
+  );
+  clavierEl.style.left = `${etat.sel.c * taille + taille / 2}px`;
+  clavierEl.style.top = `${etat.sel.r * taille + taille / 2}px`;
 }
 
 function ajusterDebordements() {
@@ -217,6 +229,7 @@ function rafraichir() {
     for (const [r, c] of mot.cells) celluleEl(r, c).classList.add("mot-actif");
   }
   celluleEl(etat.sel.r, etat.sel.c).classList.add("case-active");
+  positionnerClavier();
 }
 
 function motCourant() {

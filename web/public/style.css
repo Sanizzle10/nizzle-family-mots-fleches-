@@ -339,18 +339,24 @@ body {
   background: var(--rose);
 }
 
-/* champ invisible qui invoque le clavier virtuel sur téléphone ;
-   font-size 16px minimum sinon iOS zoome la page au focus */
+/* Champ invisible qui invoque le clavier virtuel sur téléphone.
+   Positionné SUR la case sélectionnée (dans .grille) : quand le
+   navigateur mobile défile pour garder le curseur visible au-dessus du
+   clavier, il garde du même coup la case où l'on écrit — l'écran ne
+   « remonte » plus à chaque lettre. font-size 16px minimum sinon iOS
+   zoome la page au focus. */
 #clavier-mobile {
-  position: fixed;
-  bottom: 0;
+  position: absolute;
+  top: 0;
   left: 0;
-  width: 1px;
-  height: 1px;
+  width: 2px;
+  height: 2px;
   font-size: 16px;
   opacity: 0;
   border: none;
   padding: 0;
+  caret-color: transparent;
+  pointer-events: none;
 }
 
 /* ---- grille ---- */
@@ -363,6 +369,8 @@ body {
   margin: 0 auto;
   outline: none;
   user-select: none;
+  /* ancre du champ clavier invisible, positionné sur la case active */
+  position: relative;
 }
 
 .case {

@@ -318,6 +318,34 @@ function cleStockage() {
   return `nizzle:${etat.data.id}`;
 }
 
+function empreinteGrille(data) {
+  // Identité du CONTENU de la grille : si une banque régénérée réutilise
+  // un numéro pour une autre grille, la vieille sauvegarde ne doit
+  // surtout pas s'y superposer.
+  const texte = data.solution.join("");
+  let h = 5381;
+  for (let i = 0; i < texte.length; i += 1) {
+    h = ((h * 33) ^ texte.charCodeAt(i)) >>> 0;
+  }
+  return h.toString(36);
+}
+
+function purgerAnciennesSauvegardes() {
+  // Sauvegardes d'avant l'empreinte : invérifiables, on les retire pour
+  // que le catalogue n'affiche pas de faux états.
+  const mortes = [];
+  for (let i = 0; i < localStorage.length; i += 1) {
+    const cle = localStorage.key(i);
+    if (!cle || !cle.startsWith("nizzle:")) continue;
+    try {
+      if (!JSON.parse(localStorage.getItem(cle)).empreinte) mortes.push(cle);
+    } catch (e) {
+      mortes.push(cle);
+    }
+  }
+  for (const cle of mortes) localStorage.removeItem(cle);
+}
+
 function sauvegarder() {
   try {
     const cases = casesLettres();
@@ -331,6 +359,7 @@ function sauvegarder() {
       aides: [...etat.aides],
       fini,
       valide: etat.valide,
+      empreinte: empreinteGrille(etat.data),
       t: Date.now(),
     }));
   } catch (e) {
@@ -354,6 +383,11 @@ function restaurer() {
     const brut = localStorage.getItem(cleStockage());
     if (!brut) return;
     const sauve = JSON.parse(brut);
+    if (sauve.empreinte !== empreinteGrille(etat.data)) {
+      // La grille a changé sous ce numéro : la sauvegarde est orpheline.
+      localStorage.removeItem(cleStockage());
+      return;
+    }
     if (
       Array.isArray(sauve.values)
       && sauve.values.length === etat.data.height
@@ -654,6 +688,7 @@ function peuplerRails() {
 }
 
 async function demarrer() {
+  purgerAnciennesSauvegardes();
   peuplerRails();
   document.getElementById("date-jour").textContent =
     new Date().toLocaleDateString("fr-FR");

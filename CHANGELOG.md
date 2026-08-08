@@ -35,6 +35,14 @@ foi ; ce fichier en est la version lisible.
   libellé d'origine plutôt qu'un accord risqué.
 
 ### Corrections
+- **Android : le clavier réduit désormais la page** (`interactive-widget`)
+  — sans cela, la page ne pouvait pas défiler vers la case active et le
+  recentrage restait sans effet.
+- **Intégrité des sauvegardes** : chaque sauvegarde porte l'empreinte du
+  contenu de sa grille ; une sauvegarde qui ne correspond plus (banque
+  régénérée sous les mêmes numéros) est écartée au lieu de mélanger les
+  lettres. Les sauvegardes d'avant cette protection sont purgées —
+  progression remise à zéro une unique fois.
 - **Téléphone : recentrage automatique sur la case où l'on écrit** — au
   clic, à chaque lettre et à l'ouverture du clavier virtuel, la page
   défile pour garder la case active visible au-dessus du clavier (et ne

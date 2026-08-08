@@ -208,6 +208,10 @@ body {
   padding: 20px;
 }
 
+/* display:flex écrase le style navigateur de l'attribut hidden : sans
+   cette règle, le panneau restait affiché en permanence */
+.catalogue-fond[hidden] { display: none; }
+
 .catalogue-panneau {
   background: var(--blanc);
   border: 6px solid var(--rouge);

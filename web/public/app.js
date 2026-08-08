@@ -16,6 +16,10 @@ const verifierBtn = document.getElementById("verifier");
 const indiceBtn = document.getElementById("indice");
 const etatEl = document.getElementById("bandeau-etat");
 const clavierEl = document.getElementById("clavier-mobile");
+const victoireEl = document.getElementById("victoire");
+const victoireMessage = document.getElementById("victoire-message");
+const victoireValider = document.getElementById("victoire-valider");
+const victoirePlusTard = document.getElementById("victoire-plus-tard");
 
 // Sentinelle du clavier virtuel : certains claviers Android n'émettent
 // pas de vrais keydown ; on lit les variations du champ invisible, et la
@@ -32,6 +36,7 @@ const etat = {
   solutions: false, // grille finalisée affichée (la saisie est conservée)
   aides: new Set(), // cases révélées par le bouton Indice ("r,c")
   fautes: new Set(), // cases marquées fausses par la vérification
+  valide: false,    // grille validée par le joueur (verte au catalogue)
 };
 
 // right = →, right_down = ↴ (part à droite puis descend),
@@ -293,6 +298,7 @@ function sauvegarder() {
       values: etat.values,
       aides: [...etat.aides],
       fini,
+      valide: etat.valide,
       t: Date.now(),
     }));
   } catch (e) {
@@ -301,10 +307,11 @@ function sauvegarder() {
 }
 
 function etatSauvegarde(id) {
+  // « finie » (verte) seulement après validation explicite du joueur.
   try {
     const brut = localStorage.getItem(`nizzle:${id}`);
     if (!brut) return "";
-    return JSON.parse(brut).fini ? "finie" : "encours";
+    return JSON.parse(brut).valide ? "finie" : "encours";
   } catch (e) {
     return "";
   }
@@ -322,6 +329,7 @@ function restaurer() {
     ) {
       etat.values = sauve.values;
       etat.aides = new Set(sauve.aides || []);
+      etat.valide = Boolean(sauve.valide);
     }
   } catch (e) {
     // sauvegarde illisible : on repart de zéro
@@ -371,7 +379,17 @@ function verifierCompletion() {
     ([r, c]) => etat.values[r][c] !== etat.data.solution[r][c]
   );
   if (fausses.length === 0) {
-    afficherEtat("🎉 Bravo, grille terminée !", "victoire");
+    if (etat.valide) {
+      afficherEtat("✓ Grille validée — marquée en vert au catalogue.",
+        "victoire");
+    } else {
+      afficherEtat("🎉 Bravo, grille terminée !", "victoire");
+      const aides = etat.aides.size;
+      victoireMessage.textContent = aides
+        ? `Grille terminée sans faute (avec ${aides} indice${aides > 1 ? "s" : ""}).`
+        : "Grille terminée sans faute, chapeau !";
+      victoireEl.hidden = false;
+    }
   } else {
     // Grille pleine mais fautive : on montre où ça cloche.
     for (const [r, c] of fausses) etat.fautes.add(`${r},${c}`);
@@ -507,6 +525,8 @@ async function chargerGrille(id) {
   construireModele(data);
   etat.aides = new Set();
   etat.fautes = new Set();
+  etat.valide = false;
+  victoireEl.hidden = true;
   restaurer();
   basculerSolutions(false);
   afficherEtat(null);
@@ -636,6 +656,16 @@ async function demarrer() {
   });
   verifierBtn.addEventListener("click", verifier);
   indiceBtn.addEventListener("click", indice);
+  victoireValider.addEventListener("click", () => {
+    etat.valide = true;
+    sauvegarder();
+    victoireEl.hidden = true;
+    afficherEtat("✓ Grille validée — marquée en vert au catalogue.",
+      "victoire");
+  });
+  victoirePlusTard.addEventListener("click", () => {
+    victoireEl.hidden = true;
+  });
   clavierEl.addEventListener("input", surSaisieMobile);
   document.addEventListener("keydown", surTouche);
   window.addEventListener("resize", () => {

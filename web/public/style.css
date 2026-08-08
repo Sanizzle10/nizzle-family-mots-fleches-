@@ -273,6 +273,48 @@ body {
 
 .puce-grille.active { background: var(--bleu); color: var(--blanc); }
 
+/* ---- fenêtre de victoire ---- */
+.victoire-panneau {
+  background: var(--blanc);
+  border: 6px solid #1a7f37;
+  border-radius: 6px;
+  max-width: 420px;
+  width: 100%;
+  padding: 20px 24px;
+  text-align: center;
+}
+
+.victoire-titre {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #1a7f37;
+  margin-bottom: 8px;
+}
+
+#victoire-message {
+  color: var(--bleu);
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.victoire-note {
+  color: #4b5563;
+  font-size: .85rem;
+  margin-bottom: 14px;
+}
+
+.victoire-boutons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+#victoire-valider {
+  border-color: #1a7f37;
+  background: #1a7f37;
+  color: var(--blanc);
+}
+
 /* bandeau d'état : victoire ou erreurs */
 .bandeau-etat {
   text-align: center;

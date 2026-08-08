@@ -7,6 +7,15 @@ const choixEl = document.getElementById("choix-grille");
 const sensBtn = document.getElementById("sens");
 const sensLibelle = document.getElementById("sens-libelle");
 const solutionsBtn = document.getElementById("solutions");
+const verifierBtn = document.getElementById("verifier");
+const indiceBtn = document.getElementById("indice");
+const etatEl = document.getElementById("bandeau-etat");
+const clavierEl = document.getElementById("clavier-mobile");
+
+// Sentinelle du clavier virtuel : certains claviers Android n'émettent
+// pas de vrais keydown ; on lit les variations du champ invisible, et la
+// sentinelle permet de détecter un retour arrière (le champ raccourcit).
+const SENTINELLE = "•";
 
 const etat = {
   data: null,      // JSON de la grille
@@ -16,6 +25,8 @@ const etat = {
   sel: null,       // {r, c}
   dir: "h",
   solutions: false, // grille finalisée affichée (la saisie est conservée)
+  aides: new Set(), // cases révélées par le bouton Indice ("r,c")
+  fautes: new Set(), // cases marquées fausses par la vérification
 };
 
 // right = →, right_down = ↴ (part à droite puis descend),
@@ -181,6 +192,12 @@ function rafraichir() {
         ? data.solution[r][c]
         : etat.values[r][c];
       el.classList.toggle("revele", etat.solutions);
+      el.classList.toggle(
+        "aide", !etat.solutions && etat.aides.has(`${r},${c}`)
+      );
+      el.classList.toggle(
+        "faux", !etat.solutions && etat.fautes.has(`${r},${c}`)
+      );
       el.classList.remove("mot-actif", "case-active");
     }
   }
@@ -210,7 +227,10 @@ function selectionner(r, c, dir) {
   if (dir && ici[dir] !== null) fixerSens(dir);
   else if (ici[etat.dir] === null) fixerSens(etat.dir === "h" ? "v" : "h");
   else rafraichir();
-  grilleEl.focus({ preventScroll: true });
+  // Le focus va au champ invisible : sur téléphone il invoque le clavier
+  // virtuel, sur ordinateur les keydown remontent au document.
+  clavierEl.value = SENTINELLE;
+  clavierEl.focus({ preventScroll: true });
 }
 
 function clicLettre(r, c) {
@@ -250,6 +270,120 @@ function avancerDansMot(sens) {
   }
 }
 
+// ------------------------------------------------ progression et contrôle
+
+function cleStockage() {
+  return `nizzle:${etat.data.id}`;
+}
+
+function sauvegarder() {
+  try {
+    localStorage.setItem(cleStockage(), JSON.stringify({
+      values: etat.values,
+      aides: [...etat.aides],
+      t: Date.now(),
+    }));
+  } catch (e) {
+    // stockage plein ou bloqué : le jeu continue sans sauvegarde
+  }
+}
+
+function restaurer() {
+  try {
+    const brut = localStorage.getItem(cleStockage());
+    if (!brut) return;
+    const sauve = JSON.parse(brut);
+    if (
+      Array.isArray(sauve.values)
+      && sauve.values.length === etat.data.height
+      && sauve.values.every((ligne) => ligne.length === etat.data.width)
+    ) {
+      etat.values = sauve.values;
+      etat.aides = new Set(sauve.aides || []);
+    }
+  } catch (e) {
+    // sauvegarde illisible : on repart de zéro
+  }
+}
+
+function afficherEtat(message, classe) {
+  etatEl.hidden = !message;
+  etatEl.textContent = message || "";
+  etatEl.className = `bandeau-etat ${classe || ""}`;
+}
+
+function poserLettre(r, c, lettre, aide = false) {
+  etat.values[r][c] = lettre;
+  etat.fautes.delete(`${r},${c}`);
+  if (aide) etat.aides.add(`${r},${c}`);
+  else etat.aides.delete(`${r},${c}`);
+  sauvegarder();
+  verifierCompletion();
+}
+
+function effacerLettre(r, c) {
+  etat.values[r][c] = "";
+  etat.fautes.delete(`${r},${c}`);
+  etat.aides.delete(`${r},${c}`);
+  sauvegarder();
+  afficherEtat(null);
+}
+
+function casesLettres() {
+  const cases = [];
+  for (let r = 0; r < etat.data.height; r += 1) {
+    for (let c = 0; c < etat.data.width; c += 1) {
+      if (etat.data.solution[r][c] !== "#") cases.push([r, c]);
+    }
+  }
+  return cases;
+}
+
+function verifierCompletion() {
+  const cases = casesLettres();
+  if (!cases.every(([r, c]) => etat.values[r][c])) {
+    afficherEtat(null);
+    return;
+  }
+  const fausses = cases.filter(
+    ([r, c]) => etat.values[r][c] !== etat.data.solution[r][c]
+  );
+  if (fausses.length === 0) {
+    afficherEtat("🎉 Bravo, grille terminée !", "victoire");
+  } else {
+    // Grille pleine mais fautive : on montre où ça cloche.
+    for (const [r, c] of fausses) etat.fautes.add(`${r},${c}`);
+    afficherEtat(
+      `La grille est pleine mais ${fausses.length} lettre(s) `
+      + "clochent — elles sont barrées.",
+      "erreurs"
+    );
+  }
+}
+
+function verifier() {
+  if (etat.solutions) return;
+  const remplies = casesLettres().filter(([r, c]) => etat.values[r][c]);
+  const fausses = remplies.filter(
+    ([r, c]) => etat.values[r][c] !== etat.data.solution[r][c]
+  );
+  for (const [r, c] of fausses) etat.fautes.add(`${r},${c}`);
+  if (!remplies.length) afficherEtat("Rien à vérifier pour l'instant.", "");
+  else if (!fausses.length) afficherEtat("Tout est juste, continue !", "victoire");
+  else afficherEtat(`${fausses.length} lettre(s) fausse(s), barrées.`, "erreurs");
+  rafraichir();
+}
+
+function indice() {
+  if (etat.solutions || !etat.sel) return;
+  const { r, c } = etat.sel;
+  poserLettre(r, c, etat.data.solution[r][c], true);
+  avancerDansMot(1);
+  rafraichir();
+}
+
+// ------------------------------------------------------------------ saisie
+
 function surTouche(event) {
   if (etat.solutions) return;
   if (!etat.sel || event.ctrlKey || event.metaKey || event.altKey) return;
@@ -259,25 +393,42 @@ function surTouche(event) {
   else if (key === "ArrowDown") deplacer(1, 0);
   else if (key === "ArrowUp") deplacer(-1, 0);
   else if (key === "Backspace") {
-    if (etat.values[etat.sel.r][etat.sel.c]) {
-      etat.values[etat.sel.r][etat.sel.c] = "";
-      rafraichir();
-    } else {
-      avancerDansMot(-1);
-      etat.values[etat.sel.r][etat.sel.c] = "";
-      rafraichir();
-    }
+    if (!etat.values[etat.sel.r][etat.sel.c]) avancerDansMot(-1);
+    effacerLettre(etat.sel.r, etat.sel.c);
+    rafraichir();
   } else {
     const lettre = key
       .normalize("NFD")
       .replace(/[̀-ͯ]/g, "")
       .toUpperCase();
     if (!/^[A-Z]$/.test(lettre)) return;
-    etat.values[etat.sel.r][etat.sel.c] = lettre;
+    poserLettre(etat.sel.r, etat.sel.c, lettre);
     avancerDansMot(1);
     rafraichir();
   }
   event.preventDefault();
+}
+
+function surSaisieMobile() {
+  // Chemin des claviers virtuels sans keydown fiable (Android).
+  const texte = clavierEl.value;
+  clavierEl.value = SENTINELLE;
+  if (etat.solutions || !etat.sel) return;
+  if (texte.length < SENTINELLE.length) {
+    // le champ a raccourci : retour arrière
+    if (!etat.values[etat.sel.r][etat.sel.c]) avancerDansMot(-1);
+    effacerLettre(etat.sel.r, etat.sel.c);
+    rafraichir();
+    return;
+  }
+  const lettre = texte[texte.length - 1]
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toUpperCase();
+  if (!/^[A-Z]$/.test(lettre)) return;
+  poserLettre(etat.sel.r, etat.sel.c, lettre);
+  avancerDansMot(1);
+  rafraichir();
 }
 
 function basculerSolutions(actif) {
@@ -321,8 +472,14 @@ async function chargerGrille(id) {
   const info = etat.index.grids.find((g) => g.id === id);
   const data = await (await fetch(`data/${info.file}`)).json();
   construireModele(data);
+  etat.aides = new Set();
+  etat.fautes = new Set();
+  restaurer();
   basculerSolutions(false);
+  afficherEtat(null);
   rendre();
+  verifierCompletion();
+  rafraichir();
   const url = new URL(window.location);
   url.searchParams.set("g", id);
   window.history.replaceState(null, "", url);
@@ -389,6 +546,9 @@ async function demarrer() {
     basculerSolutions(!etat.solutions);
     rafraichir();
   });
+  verifierBtn.addEventListener("click", verifier);
+  indiceBtn.addEventListener("click", indice);
+  clavierEl.addEventListener("input", surSaisieMobile);
   document.addEventListener("keydown", surTouche);
   window.addEventListener("resize", () => {
     ajusterTaille();

@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>NiZZLE Family — Mots Fléchés Foot</title>
-<link rel="stylesheet" href="style.css?v=4">
+<link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
 <div class="rail rail-gauche" aria-hidden="true"></div>
@@ -21,16 +21,26 @@
       <button id="sens" class="bouton-sens" title="Sens de saisie (clic sur la case sélectionnée pour basculer)">
         Saisie : <span id="sens-libelle">→ horizontal</span>
       </button>
+      <button id="verifier" class="bouton-sens" title="Surligner les lettres fausses">
+        Vérifier
+      </button>
+      <button id="indice" class="bouton-sens" title="Révéler la lettre de la case sélectionnée">
+        Indice
+      </button>
       <button id="solutions" class="bouton-sens" title="Afficher ou masquer la grille finalisée">
         Solutions
       </button>
     </div>
   </header>
+  <div id="bandeau-etat" class="bandeau-etat" hidden></div>
   <main>
     <div id="grille" class="grille" tabindex="0" aria-label="Grille de mots fléchés"></div>
   </main>
+  <input id="clavier-mobile" type="text" inputmode="text" autocomplete="off"
+         autocorrect="off" autocapitalize="characters" spellcheck="false"
+         aria-hidden="true" tabindex="-1">
   <footer class="pied">NiZZLE Family — un jeu maison, thème football</footer>
 </div>
-<script type="module" src="app.js?v=4"></script>
+<script type="module" src="app.js?v=5"></script>
 </body>
 </html>

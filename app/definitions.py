@@ -89,17 +89,26 @@ def _singulier_verbe(mot: str) -> str | None:
 
 def _accorder(mot: str, pluriel: bool) -> str | None:
     """Ré-accorde un premier mot marqué au féminin pluriel ; None = on ne
-    sait pas faire proprement."""
+    sait pas faire proprement.
+
+    Un mot-réponse finissant par S (pluriel probable) peut aussi être un
+    nom propre singulier (EARPS) : impossible de trancher, donc devant
+    toute marque d'accord on renonce et on garde le libellé d'origine.
+    """
+    if mot in _VERBES_IRREGULIERS:
+        # avant les règles de suffixe : « font », « ont », « sont »,
+        # « vont » finissent en -ont, pas en -ent
+        return None if pluriel else _VERBES_IRREGULIERS[mot]
     if mot.endswith("ées"):
-        return mot[:-3] + ("és" if pluriel else "é")
+        return None if pluriel else mot[:-3] + "é"
     if mot.endswith("ée"):
         return mot[:-2] + "é"
     if mot.endswith("és"):
-        return mot if pluriel else mot[:-1]
+        return None if pluriel else mot[:-1]
     if mot.endswith("aient"):
-        return mot if pluriel else mot[:-5] + "ait"  # imparfait
+        return None if pluriel else mot[:-5] + "ait"  # imparfait
     if mot.endswith("ent"):
-        return mot if pluriel else _singulier_verbe(mot)
+        return None if pluriel else _singulier_verbe(mot)
     if mot.endswith("s"):
         # rouges, bourguignonnes, mises, suivies... : la mise au masculin
         # singulier d'un adjectif est trop incertaine
@@ -164,6 +173,24 @@ def appliquer_exclusions(entries: list[Entry]) -> list[Entry]:
         if entry.definitions:
             gardes.append(entry)
     return gardes
+
+
+def mots_connus(entries: list[Entry]) -> list[Entry]:
+    """Mots grand public : au moins une définition de niveau 1."""
+    return [e for e in entries if any(d.level == 1 for d in e.definitions)]
+
+
+def choisir_definition(entry: Entry, cible: int, rng) -> str:
+    """Définition adaptée au niveau visé : niveau le plus proche (en
+    dessous de préférence), registre factuel en facile, joueur sinon."""
+    def ecart(d):
+        return abs(d.level - cible) + (0.5 if d.level > cible else 0)
+
+    meilleur = min(ecart(d) for d in entry.definitions)
+    bassin = [d for d in entry.definitions if ecart(d) == meilleur]
+    registre = "factuel" if cible == 1 else "joueur"
+    prefere = [d for d in bassin if d.register == registre]
+    return rng.choice(prefere or bassin).text
 
 
 def preparer_lexique(entries: list[Entry]) -> list[Entry]:

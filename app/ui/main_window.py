@@ -16,6 +16,7 @@ from PySide6.QtGui import (
 )
 from PySide6.QtWidgets import (
     QApplication,
+    QComboBox,
     QFileDialog,
     QHBoxLayout,
     QLabel,
@@ -32,7 +33,7 @@ from PySide6.QtWidgets import (
 
 import random
 
-from app.definitions import preparer_lexique
+from app.definitions import choisir_definition, mots_connus, preparer_lexique
 from app.dictionary import load_dictionary
 from app.generator import CLUE_CELL
 from app.parallel import generate_best, worker_count
@@ -356,6 +357,13 @@ class MainWindow(QMainWindow):
         # Deuxième rangée : les actions. Sur une seule ligne, les derniers
         # boutons débordaient de la fenêtre sur les écrans moins larges.
         actions = QHBoxLayout()
+        actions.addWidget(QLabel("Difficulté"))
+        self.difficulty_combo = QComboBox()
+        self.difficulty_combo.addItems(
+            ["Facile (mots connus)", "Moyen", "Difficile"]
+        )
+        actions.addWidget(self.difficulty_combo)
+
         self.generate_button = QPushButton("Générer une grille")
         self.generate_button.clicked.connect(self.generate)
         actions.addWidget(self.generate_button)
@@ -503,8 +511,15 @@ class MainWindow(QMainWindow):
         self.statusBar().showMessage(
             f"Génération en cours… ({cores} recherche(s) en parallèle)"
         )
+        # Facile : uniquement des mots grand public (une définition de
+        # niveau 1 au lexique) — même logique que la version web.
+        pool = self.entries
+        if self.difficulty_combo.currentIndex() == 0:
+            connus = mots_connus(self.entries)
+            if len(connus) >= 300:
+                pool = connus
         self.worker = GenerationWorker(
-            self.entries,
+            pool,
             width=self.width_spin.value(),
             height=self.height_spin.value(),
             # Plafond, pas un coût : la recherche s'arrête dès qu'une grille
@@ -522,6 +537,16 @@ class MainWindow(QMainWindow):
         self.statusBar().showMessage(f"Échec de la génération : {message}")
 
     def on_generated(self, grid, placements, stats) -> None:
+        # Les définitions suivent la difficulté choisie : factuel direct en
+        # facile, humour « joueur » sur les niveaux relevés.
+        cible = self.difficulty_combo.currentIndex() + 1
+        by_word = {entry.word: entry for entry in self.entries}
+        rng = random.Random()
+        for placement in placements:
+            entry = by_word.get(placement.word)
+            if entry is not None and entry.definitions:
+                placement.definition = choisir_definition(entry, cible, rng)
+
         self.placements = placements
         self.grid_widget.set_grid(grid, placements)
         self.refresh_word_list()

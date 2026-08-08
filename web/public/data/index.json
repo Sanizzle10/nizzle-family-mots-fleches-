@@ -1,206 +1,205 @@
 {
  "version": 1,
- "generated": "2026-08-07",
- "dailyStart": "2026-08-07",
+ "generated": "2026-08-08",
+ "dailyStart": "2026-08-08",
  "dailyOrder": [
-  "8x13-018",
-  "10x15-006",
-  "8x13-148",
-  "8x13-069",
-  "13x20-006",
-  "13x20-002",
-  "8x13-143",
-  "8x13-139",
-  "8x13-024",
-  "8x13-017",
-  "10x15-031",
-  "8x13-010",
+  "8x13-038",
+  "8x13-075",
+  "8x13-095",
+  "8x13-105",
+  "8x13-073",
+  "10x15-026",
+  "8x13-049",
+  "8x13-070",
   "13x20-010",
-  "8x13-037",
-  "10x15-035",
+  "8x13-066",
+  "8x13-147",
+  "13x20-003",
+  "8x13-107",
+  "8x13-130",
+  "8x13-081",
+  "8x13-044",
+  "8x13-010",
+  "8x13-026",
+  "8x13-078",
+  "8x13-140",
+  "8x13-149",
+  "8x13-031",
+  "8x13-109",
+  "8x13-067",
+  "8x13-104",
+  "8x13-019",
+  "8x13-008",
+  "8x13-029",
+  "8x13-139",
+  "10x15-002",
+  "8x13-045",
+  "8x13-071",
+  "10x15-008",
+  "8x13-085",
+  "8x13-018",
+  "8x13-040",
+  "8x13-124",
+  "8x13-016",
+  "8x13-126",
+  "10x15-011",
+  "8x13-055",
+  "8x13-069",
+  "13x20-005",
+  "8x13-132",
+  "8x13-076",
+  "10x15-023",
+  "10x15-001",
+  "8x13-074",
+  "10x15-022",
+  "8x13-007",
+  "8x13-092",
+  "10x15-005",
+  "8x13-083",
+  "8x13-063",
+  "8x13-030",
+  "8x13-006",
+  "8x13-041",
+  "8x13-023",
+  "8x13-084",
+  "8x13-052",
+  "8x13-125",
+  "8x13-039",
+  "8x13-143",
+  "13x20-006",
+  "8x13-001",
+  "8x13-050",
+  "8x13-058",
+  "10x15-004",
+  "8x13-150",
+  "10x15-027",
+  "8x13-004",
+  "8x13-053",
+  "8x13-142",
+  "8x13-087",
+  "8x13-114",
+  "8x13-099",
+  "8x13-035",
+  "8x13-015",
+  "8x13-024",
+  "8x13-056",
+  "8x13-086",
+  "8x13-047",
+  "8x13-110",
+  "10x15-012",
+  "8x13-100",
+  "10x15-009",
+  "8x13-128",
+  "8x13-115",
+  "8x13-022",
+  "8x13-020",
   "8x13-094",
   "8x13-032",
-  "8x13-132",
-  "10x15-023",
-  "10x15-011",
-  "8x13-012",
-  "8x13-022",
-  "8x13-112",
-  "10x15-034",
-  "8x13-145",
-  "8x13-053",
-  "8x13-102",
-  "8x13-056",
-  "8x13-033",
-  "8x13-096",
-  "8x13-048",
-  "8x13-129",
-  "8x13-047",
-  "8x13-046",
-  "13x20-008",
-  "10x15-018",
-  "10x15-024",
-  "8x13-093",
-  "8x13-011",
-  "8x13-014",
-  "8x13-146",
-  "10x15-021",
-  "10x15-033",
-  "8x13-035",
-  "13x20-007",
-  "8x13-049",
-  "8x13-054",
-  "8x13-027",
-  "8x13-106",
-  "8x13-070",
-  "8x13-058",
-  "8x13-005",
-  "8x13-034",
-  "10x15-022",
-  "8x13-055",
-  "8x13-076",
-  "8x13-086",
-  "8x13-092",
-  "10x15-026",
-  "8x13-117",
-  "8x13-007",
-  "8x13-114",
-  "10x15-010",
-  "8x13-142",
-  "13x20-005",
-  "8x13-128",
-  "8x13-015",
-  "8x13-020",
-  "8x13-138",
-  "8x13-144",
-  "8x13-009",
-  "10x15-017",
-  "8x13-068",
   "8x13-065",
-  "8x13-057",
-  "8x13-085",
-  "10x15-015",
-  "8x13-031",
-  "8x13-071",
-  "8x13-061",
-  "8x13-090",
-  "8x13-079",
-  "8x13-041",
-  "10x15-007",
-  "8x13-040",
-  "8x13-059",
-  "10x15-014",
-  "8x13-016",
-  "10x15-027",
-  "13x20-004",
-  "8x13-038",
-  "8x13-042",
-  "10x15-032",
-  "10x15-008",
-  "8x13-121",
-  "8x13-089",
-  "8x13-084",
-  "8x13-095",
-  "8x13-087",
-  "8x13-118",
-  "8x13-088",
-  "8x13-136",
-  "10x15-001",
-  "10x15-028",
-  "8x13-029",
-  "8x13-150",
-  "8x13-077",
-  "8x13-050",
-  "8x13-075",
-  "8x13-134",
-  "8x13-003",
-  "10x15-030",
-  "8x13-052",
-  "8x13-023",
-  "8x13-045",
-  "8x13-004",
-  "8x13-123",
-  "8x13-044",
-  "8x13-127",
-  "10x15-002",
-  "8x13-030",
-  "8x13-073",
-  "8x13-064",
-  "8x13-043",
-  "8x13-140",
-  "10x15-005",
-  "8x13-130",
-  "8x13-125",
-  "8x13-122",
-  "8x13-019",
-  "10x15-009",
-  "10x15-025",
-  "8x13-097",
-  "8x13-103",
-  "8x13-124",
-  "8x13-039",
-  "8x13-111",
-  "8x13-108",
-  "8x13-066",
-  "8x13-082",
-  "8x13-131",
-  "13x20-011",
-  "8x13-074",
-  "8x13-116",
-  "13x20-009",
-  "8x13-062",
-  "8x13-026",
-  "13x20-012",
-  "8x13-025",
-  "8x13-101",
-  "8x13-149",
-  "8x13-060",
-  "10x15-004",
-  "8x13-104",
-  "8x13-109",
-  "8x13-013",
-  "8x13-099",
-  "8x13-078",
+  "8x13-144",
+  "10x15-006",
   "8x13-072",
-  "8x13-081",
-  "8x13-051",
-  "8x13-063",
-  "8x13-135",
-  "8x13-083",
-  "8x13-119",
-  "10x15-012",
-  "8x13-110",
-  "13x20-003",
+  "13x20-012",
+  "13x20-004",
   "10x15-016",
-  "8x13-098",
-  "10x15-020",
+  "8x13-061",
+  "8x13-027",
+  "8x13-135",
+  "13x20-002",
+  "10x15-017",
+  "8x13-089",
+  "13x20-011",
+  "8x13-012",
   "10x15-019",
-  "8x13-141",
-  "8x13-028",
-  "8x13-126",
-  "8x13-107",
-  "8x13-036",
-  "8x13-120",
-  "13x20-013",
-  "10x15-013",
-  "8x13-091",
-  "8x13-147",
+  "10x15-031",
+  "8x13-134",
+  "8x13-043",
+  "8x13-014",
+  "10x15-007",
+  "8x13-062",
+  "10x15-035",
+  "8x13-059",
+  "8x13-121",
   "8x13-080",
-  "10x15-003",
-  "8x13-002",
-  "10x15-029",
-  "13x20-001",
-  "8x13-001",
+  "8x13-106",
+  "8x13-098",
+  "8x13-025",
+  "8x13-057",
+  "8x13-122",
+  "8x13-013",
   "8x13-133",
-  "8x13-100",
-  "8x13-115",
-  "8x13-067",
+  "10x15-029",
+  "8x13-088",
+  "10x15-018",
+  "8x13-102",
+  "8x13-118",
+  "8x13-048",
+  "13x20-009",
   "8x13-137",
+  "8x13-145",
+  "10x15-003",
+  "8x13-003",
+  "8x13-090",
   "8x13-113",
-  "8x13-006",
-  "8x13-008",
-  "8x13-105",
-  "8x13-021"
+  "8x13-116",
+  "10x15-020",
+  "8x13-082",
+  "8x13-011",
+  "8x13-141",
+  "8x13-138",
+  "8x13-009",
+  "8x13-093",
+  "10x15-013",
+  "8x13-036",
+  "8x13-079",
+  "8x13-123",
+  "8x13-131",
+  "8x13-108",
+  "8x13-021",
+  "10x15-028",
+  "8x13-097",
+  "13x20-001",
+  "8x13-033",
+  "8x13-046",
+  "8x13-103",
+  "10x15-025",
+  "8x13-129",
+  "10x15-032",
+  "8x13-005",
+  "8x13-096",
+  "10x15-015",
+  "8x13-042",
+  "10x15-033",
+  "13x20-008",
+  "8x13-112",
+  "8x13-060",
+  "8x13-017",
+  "10x15-010",
+  "8x13-117",
+  "8x13-034",
+  "8x13-148",
+  "8x13-077",
+  "8x13-119",
+  "8x13-127",
+  "10x15-030",
+  "8x13-068",
+  "8x13-051",
+  "8x13-037",
+  "8x13-054",
+  "10x15-034",
+  "10x15-024",
+  "8x13-002",
+  "13x20-007",
+  "8x13-091",
+  "10x15-014",
+  "8x13-028",
+  "8x13-146",
+  "8x13-120",
+  "8x13-111",
+  "8x13-064",
+  "10x15-021",
+  "8x13-136",
+  "8x13-101"
  ],
  "grids": [
   {
@@ -209,7 +208,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 31
+   "words": 30
   },
   {
    "id": "8x13-002",
@@ -217,7 +216,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 31
+   "words": 29
   },
   {
    "id": "8x13-003",
@@ -225,7 +224,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 29
+   "words": 31
   },
   {
    "id": "8x13-004",
@@ -233,7 +232,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 28
+   "words": 31
   },
   {
    "id": "8x13-005",
@@ -241,7 +240,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 28
+   "words": 31
   },
   {
    "id": "8x13-006",
@@ -249,39 +248,39 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 31
+   "words": 33
   },
   {
    "id": "8x13-007",
    "file": "grilles/8x13-007.json",
    "width": 8,
    "height": 13,
-   "difficulty": 2,
-   "words": 30
+   "difficulty": 1,
+   "words": 31
   },
   {
    "id": "8x13-008",
    "file": "grilles/8x13-008.json",
    "width": 8,
    "height": 13,
-   "difficulty": 2,
-   "words": 31
+   "difficulty": 1,
+   "words": 30
   },
   {
    "id": "8x13-009",
    "file": "grilles/8x13-009.json",
    "width": 8,
    "height": 13,
-   "difficulty": 2,
-   "words": 30
+   "difficulty": 1,
+   "words": 31
   },
   {
    "id": "8x13-010",
    "file": "grilles/8x13-010.json",
    "width": 8,
    "height": 13,
-   "difficulty": 3,
-   "words": 30
+   "difficulty": 1,
+   "words": 28
   },
   {
    "id": "8x13-011",
@@ -289,7 +288,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 29
+   "words": 27
   },
   {
    "id": "8x13-012",
@@ -297,7 +296,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 30
+   "words": 27
   },
   {
    "id": "8x13-013",
@@ -305,7 +304,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 31
+   "words": 30
   },
   {
    "id": "8x13-014",
@@ -313,7 +312,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 31
+   "words": 30
   },
   {
    "id": "8x13-015",
@@ -321,7 +320,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 32
+   "words": 30
   },
   {
    "id": "8x13-016",
@@ -336,32 +335,32 @@
    "file": "grilles/8x13-017.json",
    "width": 8,
    "height": 13,
-   "difficulty": 2,
-   "words": 29
+   "difficulty": 1,
+   "words": 34
   },
   {
    "id": "8x13-018",
    "file": "grilles/8x13-018.json",
    "width": 8,
    "height": 13,
-   "difficulty": 2,
-   "words": 30
+   "difficulty": 1,
+   "words": 29
   },
   {
    "id": "8x13-019",
    "file": "grilles/8x13-019.json",
    "width": 8,
    "height": 13,
-   "difficulty": 2,
-   "words": 27
+   "difficulty": 1,
+   "words": 28
   },
   {
    "id": "8x13-020",
    "file": "grilles/8x13-020.json",
    "width": 8,
    "height": 13,
-   "difficulty": 3,
-   "words": 28
+   "difficulty": 1,
+   "words": 32
   },
   {
    "id": "8x13-021",
@@ -369,7 +368,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 30
+   "words": 32
   },
   {
    "id": "8x13-022",
@@ -377,7 +376,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 30
+   "words": 27
   },
   {
    "id": "8x13-023",
@@ -385,7 +384,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 27
+   "words": 34
   },
   {
    "id": "8x13-024",
@@ -393,7 +392,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 33
+   "words": 32
   },
   {
    "id": "8x13-025",
@@ -401,7 +400,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 28
+   "words": 30
   },
   {
    "id": "8x13-026",
@@ -409,22 +408,22 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 31
+   "words": 29
   },
   {
    "id": "8x13-027",
    "file": "grilles/8x13-027.json",
    "width": 8,
    "height": 13,
-   "difficulty": 2,
-   "words": 28
+   "difficulty": 1,
+   "words": 29
   },
   {
    "id": "8x13-028",
    "file": "grilles/8x13-028.json",
    "width": 8,
    "height": 13,
-   "difficulty": 2,
+   "difficulty": 1,
    "words": 30
   },
   {
@@ -432,16 +431,16 @@
    "file": "grilles/8x13-029.json",
    "width": 8,
    "height": 13,
-   "difficulty": 2,
-   "words": 29
+   "difficulty": 1,
+   "words": 26
   },
   {
    "id": "8x13-030",
    "file": "grilles/8x13-030.json",
    "width": 8,
    "height": 13,
-   "difficulty": 3,
-   "words": 30
+   "difficulty": 1,
+   "words": 31
   },
   {
    "id": "8x13-031",
@@ -449,7 +448,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 32
+   "words": 29
   },
   {
    "id": "8x13-032",
@@ -457,7 +456,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 30
+   "words": 32
   },
   {
    "id": "8x13-033",
@@ -465,7 +464,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 32
+   "words": 33
   },
   {
    "id": "8x13-034",
@@ -481,7 +480,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 28
+   "words": 29
   },
   {
    "id": "8x13-036",
@@ -489,30 +488,30 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 29
+   "words": 33
   },
   {
    "id": "8x13-037",
    "file": "grilles/8x13-037.json",
    "width": 8,
    "height": 13,
-   "difficulty": 2,
-   "words": 31
+   "difficulty": 1,
+   "words": 29
   },
   {
    "id": "8x13-038",
    "file": "grilles/8x13-038.json",
    "width": 8,
    "height": 13,
-   "difficulty": 2,
-   "words": 30
+   "difficulty": 1,
+   "words": 28
   },
   {
    "id": "8x13-039",
    "file": "grilles/8x13-039.json",
    "width": 8,
    "height": 13,
-   "difficulty": 2,
+   "difficulty": 1,
    "words": 29
   },
   {
@@ -520,7 +519,7 @@
    "file": "grilles/8x13-040.json",
    "width": 8,
    "height": 13,
-   "difficulty": 3,
+   "difficulty": 1,
    "words": 29
   },
   {
@@ -537,7 +536,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 32
+   "words": 31
   },
   {
    "id": "8x13-043",
@@ -545,7 +544,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 32
+   "words": 30
   },
   {
    "id": "8x13-044",
@@ -561,7 +560,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 32
+   "words": 31
   },
   {
    "id": "8x13-046",
@@ -569,30 +568,30 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 31
+   "words": 30
   },
   {
    "id": "8x13-047",
    "file": "grilles/8x13-047.json",
    "width": 8,
    "height": 13,
-   "difficulty": 2,
-   "words": 30
+   "difficulty": 1,
+   "words": 26
   },
   {
    "id": "8x13-048",
    "file": "grilles/8x13-048.json",
    "width": 8,
    "height": 13,
-   "difficulty": 2,
-   "words": 31
+   "difficulty": 1,
+   "words": 33
   },
   {
    "id": "8x13-049",
    "file": "grilles/8x13-049.json",
    "width": 8,
    "height": 13,
-   "difficulty": 2,
+   "difficulty": 1,
    "words": 31
   },
   {
@@ -600,8 +599,8 @@
    "file": "grilles/8x13-050.json",
    "width": 8,
    "height": 13,
-   "difficulty": 3,
-   "words": 28
+   "difficulty": 1,
+   "words": 29
   },
   {
    "id": "8x13-051",
@@ -617,7 +616,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 28
+   "words": 30
   },
   {
    "id": "8x13-053",
@@ -625,7 +624,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 26
+   "words": 27
   },
   {
    "id": "8x13-054",
@@ -633,7 +632,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 29
+   "words": 30
   },
   {
    "id": "8x13-055",
@@ -641,7 +640,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 27
+   "words": 30
   },
   {
    "id": "8x13-056",
@@ -649,39 +648,39 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 31
+   "words": 33
   },
   {
    "id": "8x13-057",
    "file": "grilles/8x13-057.json",
    "width": 8,
    "height": 13,
-   "difficulty": 2,
-   "words": 28
+   "difficulty": 1,
+   "words": 30
   },
   {
    "id": "8x13-058",
    "file": "grilles/8x13-058.json",
    "width": 8,
    "height": 13,
-   "difficulty": 2,
-   "words": 31
+   "difficulty": 1,
+   "words": 28
   },
   {
    "id": "8x13-059",
    "file": "grilles/8x13-059.json",
    "width": 8,
    "height": 13,
-   "difficulty": 2,
-   "words": 33
+   "difficulty": 1,
+   "words": 31
   },
   {
    "id": "8x13-060",
    "file": "grilles/8x13-060.json",
    "width": 8,
    "height": 13,
-   "difficulty": 3,
-   "words": 29
+   "difficulty": 1,
+   "words": 28
   },
   {
    "id": "8x13-061",
@@ -689,7 +688,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 30
+   "words": 23
   },
   {
    "id": "8x13-062",
@@ -697,7 +696,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 30
+   "words": 33
   },
   {
    "id": "8x13-063",
@@ -705,7 +704,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 30
+   "words": 27
   },
   {
    "id": "8x13-064",
@@ -713,7 +712,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 30
+   "words": 29
   },
   {
    "id": "8x13-065",
@@ -721,7 +720,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 31
+   "words": 29
   },
   {
    "id": "8x13-066",
@@ -736,23 +735,23 @@
    "file": "grilles/8x13-067.json",
    "width": 8,
    "height": 13,
-   "difficulty": 2,
-   "words": 29
+   "difficulty": 1,
+   "words": 33
   },
   {
    "id": "8x13-068",
    "file": "grilles/8x13-068.json",
    "width": 8,
    "height": 13,
-   "difficulty": 2,
-   "words": 29
+   "difficulty": 1,
+   "words": 31
   },
   {
    "id": "8x13-069",
    "file": "grilles/8x13-069.json",
    "width": 8,
    "height": 13,
-   "difficulty": 2,
+   "difficulty": 1,
    "words": 31
   },
   {
@@ -760,8 +759,8 @@
    "file": "grilles/8x13-070.json",
    "width": 8,
    "height": 13,
-   "difficulty": 3,
-   "words": 31
+   "difficulty": 1,
+   "words": 29
   },
   {
    "id": "8x13-071",
@@ -769,7 +768,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 28
+   "words": 32
   },
   {
    "id": "8x13-072",
@@ -777,7 +776,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 30
+   "words": 29
   },
   {
    "id": "8x13-073",
@@ -793,7 +792,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 29
+   "words": 27
   },
   {
    "id": "8x13-075",
@@ -809,22 +808,22 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 29
+   "words": 28
   },
   {
    "id": "8x13-077",
    "file": "grilles/8x13-077.json",
    "width": 8,
    "height": 13,
-   "difficulty": 2,
-   "words": 27
+   "difficulty": 1,
+   "words": 31
   },
   {
    "id": "8x13-078",
    "file": "grilles/8x13-078.json",
    "width": 8,
    "height": 13,
-   "difficulty": 2,
+   "difficulty": 1,
    "words": 29
   },
   {
@@ -832,16 +831,16 @@
    "file": "grilles/8x13-079.json",
    "width": 8,
    "height": 13,
-   "difficulty": 2,
-   "words": 32
+   "difficulty": 1,
+   "words": 29
   },
   {
    "id": "8x13-080",
    "file": "grilles/8x13-080.json",
    "width": 8,
    "height": 13,
-   "difficulty": 3,
-   "words": 28
+   "difficulty": 1,
+   "words": 32
   },
   {
    "id": "8x13-081",
@@ -849,7 +848,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 29
+   "words": 32
   },
   {
    "id": "8x13-082",
@@ -865,7 +864,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 29
+   "words": 31
   },
   {
    "id": "8x13-084",
@@ -873,7 +872,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 29
+   "words": 28
   },
   {
    "id": "8x13-085",
@@ -889,78 +888,78 @@
    "width": 8,
    "height": 13,
    "difficulty": 1,
-   "words": 28
+   "words": 30
   },
   {
    "id": "8x13-087",
    "file": "grilles/8x13-087.json",
    "width": 8,
    "height": 13,
-   "difficulty": 2,
-   "words": 31
+   "difficulty": 1,
+   "words": 29
   },
   {
    "id": "8x13-088",
    "file": "grilles/8x13-088.json",
    "width": 8,
    "height": 13,
-   "difficulty": 2,
-   "words": 29
+   "difficulty": 1,
+   "words": 28
   },
   {
    "id": "8x13-089",
    "file": "grilles/8x13-089.json",
    "width": 8,
    "height": 13,
-   "difficulty": 2,
-   "words": 29
+   "difficulty": 1,
+   "words": 28
   },
   {
    "id": "8x13-090",
    "file": "grilles/8x13-090.json",
    "width": 8,
    "height": 13,
-   "difficulty": 3,
-   "words": 32
+   "difficulty": 1,
+   "words": 33
   },
   {
    "id": "8x13-091",
    "file": "grilles/8x13-091.json",
    "width": 8,
    "height": 13,
-   "difficulty": 1,
-   "words": 30
+   "difficulty": 2,
+   "words": 27
   },
   {
    "id": "8x13-092",
    "file": "grilles/8x13-092.json",
    "width": 8,
    "height": 13,
-   "difficulty": 1,
-   "words": 29
+   "difficulty": 2,
+   "words": 32
   },
   {
    "id": "8x13-093",
    "file": "grilles/8x13-093.json",
    "width": 8,
    "height": 13,
-   "difficulty": 1,
-   "words": 27
+   "difficulty": 2,
+   "words": 29
   },
   {
    "id": "8x13-094",
    "file": "grilles/8x13-094.json",
    "width": 8,
    "height": 13,
-   "difficulty": 1,
-   "words": 30
+   "difficulty": 3,
+   "words": 31
   },
   {
    "id": "8x13-095",
    "file": "grilles/8x13-095.json",
    "width": 8,
    "height": 13,
-   "difficulty": 1,
+   "difficulty": 2,
    "words": 30
   },
   {
@@ -968,8 +967,8 @@
    "file": "grilles/8x13-096.json",
    "width": 8,
    "height": 13,
-   "difficulty": 1,
-   "words": 31
+   "difficulty": 2,
+   "words": 27
   },
   {
    "id": "8x13-097",
@@ -977,14 +976,14 @@
    "width": 8,
    "height": 13,
    "difficulty": 2,
-   "words": 30
+   "words": 29
   },
   {
    "id": "8x13-098",
    "file": "grilles/8x13-098.json",
    "width": 8,
    "height": 13,
-   "difficulty": 2,
+   "difficulty": 3,
    "words": 30
   },
   {
@@ -993,14 +992,14 @@
    "width": 8,
    "height": 13,
    "difficulty": 2,
-   "words": 32
+   "words": 27
   },
   {
    "id": "8x13-100",
    "file": "grilles/8x13-100.json",
    "width": 8,
    "height": 13,
-   "difficulty": 3,
+   "difficulty": 2,
    "words": 30
   },
   {
@@ -1008,31 +1007,31 @@
    "file": "grilles/8x13-101.json",
    "width": 8,
    "height": 13,
-   "difficulty": 1,
-   "words": 28
+   "difficulty": 2,
+   "words": 29
   },
   {
    "id": "8x13-102",
    "file": "grilles/8x13-102.json",
    "width": 8,
    "height": 13,
-   "difficulty": 1,
-   "words": 29
+   "difficulty": 3,
+   "words": 30
   },
   {
    "id": "8x13-103",
    "file": "grilles/8x13-103.json",
    "width": 8,
    "height": 13,
-   "difficulty": 1,
-   "words": 28
+   "difficulty": 2,
+   "words": 31
   },
   {
    "id": "8x13-104",
    "file": "grilles/8x13-104.json",
    "width": 8,
    "height": 13,
-   "difficulty": 1,
+   "difficulty": 2,
    "words": 29
   },
   {
@@ -1040,15 +1039,15 @@
    "file": "grilles/8x13-105.json",
    "width": 8,
    "height": 13,
-   "difficulty": 1,
-   "words": 28
+   "difficulty": 2,
+   "words": 29
   },
   {
    "id": "8x13-106",
    "file": "grilles/8x13-106.json",
    "width": 8,
    "height": 13,
-   "difficulty": 1,
+   "difficulty": 3,
    "words": 30
   },
   {
@@ -1057,7 +1056,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 2,
-   "words": 29
+   "words": 27
   },
   {
    "id": "8x13-108",
@@ -1065,7 +1064,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 2,
-   "words": 31
+   "words": 30
   },
   {
    "id": "8x13-109",
@@ -1073,7 +1072,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 2,
-   "words": 31
+   "words": 29
   },
   {
    "id": "8x13-110",
@@ -1081,14 +1080,14 @@
    "width": 8,
    "height": 13,
    "difficulty": 3,
-   "words": 30
+   "words": 29
   },
   {
    "id": "8x13-111",
    "file": "grilles/8x13-111.json",
    "width": 8,
    "height": 13,
-   "difficulty": 1,
+   "difficulty": 2,
    "words": 29
   },
   {
@@ -1096,39 +1095,39 @@
    "file": "grilles/8x13-112.json",
    "width": 8,
    "height": 13,
-   "difficulty": 1,
-   "words": 30
+   "difficulty": 2,
+   "words": 29
   },
   {
    "id": "8x13-113",
    "file": "grilles/8x13-113.json",
    "width": 8,
    "height": 13,
-   "difficulty": 1,
-   "words": 29
+   "difficulty": 2,
+   "words": 27
   },
   {
    "id": "8x13-114",
    "file": "grilles/8x13-114.json",
    "width": 8,
    "height": 13,
-   "difficulty": 1,
-   "words": 29
+   "difficulty": 3,
+   "words": 30
   },
   {
    "id": "8x13-115",
    "file": "grilles/8x13-115.json",
    "width": 8,
    "height": 13,
-   "difficulty": 1,
-   "words": 28
+   "difficulty": 2,
+   "words": 24
   },
   {
    "id": "8x13-116",
    "file": "grilles/8x13-116.json",
    "width": 8,
    "height": 13,
-   "difficulty": 1,
+   "difficulty": 2,
    "words": 31
   },
   {
@@ -1137,14 +1136,14 @@
    "width": 8,
    "height": 13,
    "difficulty": 2,
-   "words": 30
+   "words": 31
   },
   {
    "id": "8x13-118",
    "file": "grilles/8x13-118.json",
    "width": 8,
    "height": 13,
-   "difficulty": 2,
+   "difficulty": 3,
    "words": 31
   },
   {
@@ -1153,30 +1152,30 @@
    "width": 8,
    "height": 13,
    "difficulty": 2,
-   "words": 28
+   "words": 29
   },
   {
    "id": "8x13-120",
    "file": "grilles/8x13-120.json",
    "width": 8,
    "height": 13,
-   "difficulty": 3,
-   "words": 30
+   "difficulty": 2,
+   "words": 31
   },
   {
    "id": "8x13-121",
    "file": "grilles/8x13-121.json",
    "width": 8,
    "height": 13,
-   "difficulty": 1,
-   "words": 29
+   "difficulty": 2,
+   "words": 30
   },
   {
    "id": "8x13-122",
    "file": "grilles/8x13-122.json",
    "width": 8,
    "height": 13,
-   "difficulty": 1,
+   "difficulty": 3,
    "words": 31
   },
   {
@@ -1184,15 +1183,15 @@
    "file": "grilles/8x13-123.json",
    "width": 8,
    "height": 13,
-   "difficulty": 1,
-   "words": 29
+   "difficulty": 2,
+   "words": 31
   },
   {
    "id": "8x13-124",
    "file": "grilles/8x13-124.json",
    "width": 8,
    "height": 13,
-   "difficulty": 1,
+   "difficulty": 2,
    "words": 30
   },
   {
@@ -1200,16 +1199,16 @@
    "file": "grilles/8x13-125.json",
    "width": 8,
    "height": 13,
-   "difficulty": 1,
-   "words": 30
+   "difficulty": 2,
+   "words": 31
   },
   {
    "id": "8x13-126",
    "file": "grilles/8x13-126.json",
    "width": 8,
    "height": 13,
-   "difficulty": 1,
-   "words": 29
+   "difficulty": 3,
+   "words": 31
   },
   {
    "id": "8x13-127",
@@ -1217,7 +1216,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 2,
-   "words": 30
+   "words": 32
   },
   {
    "id": "8x13-128",
@@ -1225,7 +1224,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 2,
-   "words": 31
+   "words": 27
   },
   {
    "id": "8x13-129",
@@ -1233,7 +1232,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 2,
-   "words": 29
+   "words": 28
   },
   {
    "id": "8x13-130",
@@ -1241,14 +1240,14 @@
    "width": 8,
    "height": 13,
    "difficulty": 3,
-   "words": 28
+   "words": 30
   },
   {
    "id": "8x13-131",
    "file": "grilles/8x13-131.json",
    "width": 8,
    "height": 13,
-   "difficulty": 1,
+   "difficulty": 2,
    "words": 31
   },
   {
@@ -1256,7 +1255,7 @@
    "file": "grilles/8x13-132.json",
    "width": 8,
    "height": 13,
-   "difficulty": 1,
+   "difficulty": 2,
    "words": 29
   },
   {
@@ -1264,32 +1263,32 @@
    "file": "grilles/8x13-133.json",
    "width": 8,
    "height": 13,
-   "difficulty": 1,
-   "words": 30
+   "difficulty": 2,
+   "words": 27
   },
   {
    "id": "8x13-134",
    "file": "grilles/8x13-134.json",
    "width": 8,
    "height": 13,
-   "difficulty": 1,
-   "words": 30
+   "difficulty": 3,
+   "words": 27
   },
   {
    "id": "8x13-135",
    "file": "grilles/8x13-135.json",
    "width": 8,
    "height": 13,
-   "difficulty": 1,
-   "words": 29
+   "difficulty": 2,
+   "words": 26
   },
   {
    "id": "8x13-136",
    "file": "grilles/8x13-136.json",
    "width": 8,
    "height": 13,
-   "difficulty": 1,
-   "words": 28
+   "difficulty": 2,
+   "words": 29
   },
   {
    "id": "8x13-137",
@@ -1297,14 +1296,14 @@
    "width": 8,
    "height": 13,
    "difficulty": 2,
-   "words": 30
+   "words": 28
   },
   {
    "id": "8x13-138",
    "file": "grilles/8x13-138.json",
    "width": 8,
    "height": 13,
-   "difficulty": 2,
+   "difficulty": 3,
    "words": 31
   },
   {
@@ -1313,14 +1312,14 @@
    "width": 8,
    "height": 13,
    "difficulty": 2,
-   "words": 30
+   "words": 32
   },
   {
    "id": "8x13-140",
    "file": "grilles/8x13-140.json",
    "width": 8,
    "height": 13,
-   "difficulty": 3,
+   "difficulty": 2,
    "words": 31
   },
   {
@@ -1328,15 +1327,15 @@
    "file": "grilles/8x13-141.json",
    "width": 8,
    "height": 13,
-   "difficulty": 1,
-   "words": 31
+   "difficulty": 2,
+   "words": 26
   },
   {
    "id": "8x13-142",
    "file": "grilles/8x13-142.json",
    "width": 8,
    "height": 13,
-   "difficulty": 1,
+   "difficulty": 3,
    "words": 32
   },
   {
@@ -1344,32 +1343,32 @@
    "file": "grilles/8x13-143.json",
    "width": 8,
    "height": 13,
-   "difficulty": 1,
-   "words": 30
+   "difficulty": 2,
+   "words": 32
   },
   {
    "id": "8x13-144",
    "file": "grilles/8x13-144.json",
    "width": 8,
    "height": 13,
-   "difficulty": 1,
-   "words": 31
+   "difficulty": 2,
+   "words": 30
   },
   {
    "id": "8x13-145",
    "file": "grilles/8x13-145.json",
    "width": 8,
    "height": 13,
-   "difficulty": 1,
-   "words": 31
+   "difficulty": 2,
+   "words": 30
   },
   {
    "id": "8x13-146",
    "file": "grilles/8x13-146.json",
    "width": 8,
    "height": 13,
-   "difficulty": 1,
-   "words": 29
+   "difficulty": 3,
+   "words": 32
   },
   {
    "id": "8x13-147",
@@ -1377,7 +1376,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 2,
-   "words": 28
+   "words": 30
   },
   {
    "id": "8x13-148",
@@ -1385,7 +1384,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 2,
-   "words": 28
+   "words": 31
   },
   {
    "id": "8x13-149",
@@ -1393,7 +1392,7 @@
    "width": 8,
    "height": 13,
    "difficulty": 2,
-   "words": 28
+   "words": 31
   },
   {
    "id": "8x13-150",
@@ -1409,7 +1408,7 @@
    "width": 10,
    "height": 15,
    "difficulty": 1,
-   "words": 46
+   "words": 43
   },
   {
    "id": "10x15-002",
@@ -1417,7 +1416,7 @@
    "width": 10,
    "height": 15,
    "difficulty": 1,
-   "words": 44
+   "words": 43
   },
   {
    "id": "10x15-003",
@@ -1433,7 +1432,7 @@
    "width": 10,
    "height": 15,
    "difficulty": 1,
-   "words": 42
+   "words": 45
   },
   {
    "id": "10x15-005",
@@ -1441,7 +1440,7 @@
    "width": 10,
    "height": 15,
    "difficulty": 1,
-   "words": 41
+   "words": 45
   },
   {
    "id": "10x15-006",
@@ -1449,14 +1448,14 @@
    "width": 10,
    "height": 15,
    "difficulty": 1,
-   "words": 42
+   "words": 44
   },
   {
    "id": "10x15-007",
    "file": "grilles/10x15-007.json",
    "width": 10,
    "height": 15,
-   "difficulty": 2,
+   "difficulty": 1,
    "words": 45
   },
   {
@@ -1464,24 +1463,24 @@
    "file": "grilles/10x15-008.json",
    "width": 10,
    "height": 15,
-   "difficulty": 2,
-   "words": 42
+   "difficulty": 1,
+   "words": 41
   },
   {
    "id": "10x15-009",
    "file": "grilles/10x15-009.json",
    "width": 10,
    "height": 15,
-   "difficulty": 2,
-   "words": 44
+   "difficulty": 1,
+   "words": 46
   },
   {
    "id": "10x15-010",
    "file": "grilles/10x15-010.json",
    "width": 10,
    "height": 15,
-   "difficulty": 3,
-   "words": 45
+   "difficulty": 1,
+   "words": 44
   },
   {
    "id": "10x15-011",
@@ -1489,7 +1488,7 @@
    "width": 10,
    "height": 15,
    "difficulty": 1,
-   "words": 44
+   "words": 43
   },
   {
    "id": "10x15-012",
@@ -1497,7 +1496,7 @@
    "width": 10,
    "height": 15,
    "difficulty": 1,
-   "words": 45
+   "words": 41
   },
   {
    "id": "10x15-013",
@@ -1505,7 +1504,7 @@
    "width": 10,
    "height": 15,
    "difficulty": 1,
-   "words": 47
+   "words": 41
   },
   {
    "id": "10x15-014",
@@ -1521,7 +1520,7 @@
    "width": 10,
    "height": 15,
    "difficulty": 1,
-   "words": 43
+   "words": 40
   },
   {
    "id": "10x15-016",
@@ -1529,22 +1528,22 @@
    "width": 10,
    "height": 15,
    "difficulty": 1,
-   "words": 47
+   "words": 46
   },
   {
    "id": "10x15-017",
    "file": "grilles/10x15-017.json",
    "width": 10,
    "height": 15,
-   "difficulty": 2,
-   "words": 43
+   "difficulty": 1,
+   "words": 45
   },
   {
    "id": "10x15-018",
    "file": "grilles/10x15-018.json",
    "width": 10,
    "height": 15,
-   "difficulty": 2,
+   "difficulty": 1,
    "words": 42
   },
   {
@@ -1552,16 +1551,16 @@
    "file": "grilles/10x15-019.json",
    "width": 10,
    "height": 15,
-   "difficulty": 2,
-   "words": 39
+   "difficulty": 1,
+   "words": 45
   },
   {
    "id": "10x15-020",
    "file": "grilles/10x15-020.json",
    "width": 10,
    "height": 15,
-   "difficulty": 3,
-   "words": 47
+   "difficulty": 1,
+   "words": 42
   },
   {
    "id": "10x15-021",
@@ -1569,47 +1568,47 @@
    "width": 10,
    "height": 15,
    "difficulty": 1,
-   "words": 45
+   "words": 42
   },
   {
    "id": "10x15-022",
    "file": "grilles/10x15-022.json",
    "width": 10,
    "height": 15,
-   "difficulty": 1,
-   "words": 45
+   "difficulty": 2,
+   "words": 38
   },
   {
    "id": "10x15-023",
    "file": "grilles/10x15-023.json",
    "width": 10,
    "height": 15,
-   "difficulty": 1,
-   "words": 38
+   "difficulty": 2,
+   "words": 42
   },
   {
    "id": "10x15-024",
    "file": "grilles/10x15-024.json",
    "width": 10,
    "height": 15,
-   "difficulty": 1,
-   "words": 44
+   "difficulty": 2,
+   "words": 40
   },
   {
    "id": "10x15-025",
    "file": "grilles/10x15-025.json",
    "width": 10,
    "height": 15,
-   "difficulty": 1,
-   "words": 43
+   "difficulty": 3,
+   "words": 42
   },
   {
    "id": "10x15-026",
    "file": "grilles/10x15-026.json",
    "width": 10,
    "height": 15,
-   "difficulty": 1,
-   "words": 43
+   "difficulty": 2,
+   "words": 41
   },
   {
    "id": "10x15-027",
@@ -1625,22 +1624,22 @@
    "width": 10,
    "height": 15,
    "difficulty": 2,
-   "words": 42
+   "words": 44
   },
   {
    "id": "10x15-029",
    "file": "grilles/10x15-029.json",
    "width": 10,
    "height": 15,
-   "difficulty": 2,
-   "words": 43
+   "difficulty": 3,
+   "words": 42
   },
   {
    "id": "10x15-030",
    "file": "grilles/10x15-030.json",
    "width": 10,
    "height": 15,
-   "difficulty": 3,
+   "difficulty": 2,
    "words": 41
   },
   {
@@ -1648,40 +1647,40 @@
    "file": "grilles/10x15-031.json",
    "width": 10,
    "height": 15,
-   "difficulty": 1,
-   "words": 46
+   "difficulty": 2,
+   "words": 44
   },
   {
    "id": "10x15-032",
    "file": "grilles/10x15-032.json",
    "width": 10,
    "height": 15,
-   "difficulty": 1,
-   "words": 42
+   "difficulty": 2,
+   "words": 46
   },
   {
    "id": "10x15-033",
    "file": "grilles/10x15-033.json",
    "width": 10,
    "height": 15,
-   "difficulty": 1,
-   "words": 42
+   "difficulty": 3,
+   "words": 44
   },
   {
    "id": "10x15-034",
    "file": "grilles/10x15-034.json",
    "width": 10,
    "height": 15,
-   "difficulty": 1,
-   "words": 43
+   "difficulty": 2,
+   "words": 42
   },
   {
    "id": "10x15-035",
    "file": "grilles/10x15-035.json",
    "width": 10,
    "height": 15,
-   "difficulty": 1,
-   "words": 44
+   "difficulty": 2,
+   "words": 42
   },
   {
    "id": "13x20-001",
@@ -1689,47 +1688,47 @@
    "width": 13,
    "height": 20,
    "difficulty": 1,
-   "words": 76
+   "words": 75
   },
   {
    "id": "13x20-002",
    "file": "grilles/13x20-002.json",
    "width": 13,
    "height": 20,
-   "difficulty": 1,
-   "words": 78
+   "difficulty": 2,
+   "words": 74
   },
   {
    "id": "13x20-003",
    "file": "grilles/13x20-003.json",
    "width": 13,
    "height": 20,
-   "difficulty": 1,
-   "words": 82
+   "difficulty": 2,
+   "words": 74
   },
   {
    "id": "13x20-004",
    "file": "grilles/13x20-004.json",
    "width": 13,
    "height": 20,
-   "difficulty": 1,
-   "words": 80
+   "difficulty": 2,
+   "words": 76
   },
   {
    "id": "13x20-005",
    "file": "grilles/13x20-005.json",
    "width": 13,
    "height": 20,
-   "difficulty": 1,
-   "words": 77
+   "difficulty": 3,
+   "words": 83
   },
   {
    "id": "13x20-006",
    "file": "grilles/13x20-006.json",
    "width": 13,
    "height": 20,
-   "difficulty": 1,
-   "words": 76
+   "difficulty": 2,
+   "words": 79
   },
   {
    "id": "13x20-007",
@@ -1737,7 +1736,7 @@
    "width": 13,
    "height": 20,
    "difficulty": 2,
-   "words": 73
+   "words": 77
   },
   {
    "id": "13x20-008",
@@ -1745,47 +1744,39 @@
    "width": 13,
    "height": 20,
    "difficulty": 2,
-   "words": 79
+   "words": 72
   },
   {
    "id": "13x20-009",
    "file": "grilles/13x20-009.json",
    "width": 13,
    "height": 20,
-   "difficulty": 2,
-   "words": 78
+   "difficulty": 3,
+   "words": 75
   },
   {
    "id": "13x20-010",
    "file": "grilles/13x20-010.json",
    "width": 13,
    "height": 20,
-   "difficulty": 3,
-   "words": 70
+   "difficulty": 2,
+   "words": 76
   },
   {
    "id": "13x20-011",
    "file": "grilles/13x20-011.json",
    "width": 13,
    "height": 20,
-   "difficulty": 1,
-   "words": 77
+   "difficulty": 2,
+   "words": 73
   },
   {
    "id": "13x20-012",
    "file": "grilles/13x20-012.json",
    "width": 13,
    "height": 20,
-   "difficulty": 1,
-   "words": 76
-  },
-  {
-   "id": "13x20-013",
-   "file": "grilles/13x20-013.json",
-   "width": 13,
-   "height": 20,
-   "difficulty": 1,
-   "words": 79
+   "difficulty": 2,
+   "words": 77
   }
  ]
 }

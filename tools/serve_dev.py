@@ -24,7 +24,8 @@ class SansCache(SimpleHTTPRequestHandler):
 def main():
     port = int(sys.argv[1]) if len(sys.argv) > 1 else 8123
     handler = partial(SansCache, directory=str(RACINE))
-    with ThreadingHTTPServer(("127.0.0.1", port), handler) as httpd:
+    # 0.0.0.0 : accessible aussi depuis le téléphone sur le même wifi
+    with ThreadingHTTPServer(("0.0.0.0", port), handler) as httpd:
         print(f"http://localhost:{port} (sans cache, racine {RACINE})")
         httpd.serve_forever()
 

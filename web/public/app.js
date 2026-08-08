@@ -3,8 +3,13 @@
    ou nouveau clic sur la case déjà sélectionnée. */
 
 const grilleEl = document.getElementById("grille");
-const choixEl = document.getElementById("choix-grille");
 const sensBtn = document.getElementById("sens");
+const btnJour = document.getElementById("btn-jour");
+const btnCatalogue = document.getElementById("btn-catalogue");
+const catalogueEl = document.getElementById("catalogue");
+const catalogueContenu = document.getElementById("catalogue-contenu");
+const catalogueFermer = document.getElementById("catalogue-fermer");
+const sousTitreEl = document.getElementById("sous-titre");
 const sensLibelle = document.getElementById("sens-libelle");
 const solutionsBtn = document.getElementById("solutions");
 const verifierBtn = document.getElementById("verifier");
@@ -278,13 +283,30 @@ function cleStockage() {
 
 function sauvegarder() {
   try {
+    const cases = casesLettres();
+    const fini =
+      cases.every(([r, c]) => etat.values[r][c])
+      && cases.every(
+        ([r, c]) => etat.values[r][c] === etat.data.solution[r][c]
+      );
     localStorage.setItem(cleStockage(), JSON.stringify({
       values: etat.values,
       aides: [...etat.aides],
+      fini,
       t: Date.now(),
     }));
   } catch (e) {
     // stockage plein ou bloqué : le jeu continue sans sauvegarde
+  }
+}
+
+function etatSauvegarde(id) {
+  try {
+    const brut = localStorage.getItem(`nizzle:${id}`);
+    if (!brut) return "";
+    return JSON.parse(brut).fini ? "finie" : "encours";
+  } catch (e) {
+    return "";
   }
 }
 
@@ -468,6 +490,17 @@ function positionnerRails() {
   }
 }
 
+const BALLONS = { 1: "⚽", 2: "⚽⚽", 3: "⚽⚽⚽" };
+
+function majSousTitre(info) {
+  const duJour = info.id === grilleDuJour(etat.index);
+  const format = `${info.width} × ${info.height}`;
+  const etoiles = BALLONS[info.difficulty] || "⚽";
+  sousTitreEl.innerHTML = duJour
+    ? `<span class="jour">⭐ GRILLE DU JOUR</span> — ${format} · ${etoiles}`
+    : `Grille n°${info.id.split("-")[1]} · ${format} · ${etoiles}`;
+}
+
 async function chargerGrille(id) {
   const info = etat.index.grids.find((g) => g.id === id);
   const data = await (await fetch(`data/${info.file}`)).json();
@@ -480,9 +513,47 @@ async function chargerGrille(id) {
   rendre();
   verifierCompletion();
   rafraichir();
+  majSousTitre(info);
   const url = new URL(window.location);
   url.searchParams.set("g", id);
   window.history.replaceState(null, "", url);
+}
+
+// ---------------------------------------------------------------- catalogue
+
+const SECTIONS = [
+  [1, "Faciles ⚽ (mots connus)"],
+  [2, "Moyennes ⚽⚽"],
+  [3, "Difficiles ⚽⚽⚽"],
+];
+
+function construireCatalogue() {
+  catalogueContenu.innerHTML = "";
+  for (const [niveau, titre] of SECTIONS) {
+    const grilles = etat.index.grids.filter((g) => g.difficulty === niveau);
+    if (!grilles.length) continue;
+    const section = document.createElement("div");
+    section.className = "catalogue-section";
+    section.textContent = titre;
+    catalogueContenu.appendChild(section);
+    const conteneur = document.createElement("div");
+    conteneur.className = "catalogue-grilles";
+    for (const g of grilles) {
+      const puce = document.createElement("button");
+      const statut = etatSauvegarde(g.id);
+      puce.className = `puce-grille ${statut}`;
+      if (etat.data && g.id === etat.data.id) puce.classList.add("active");
+      const marque = statut === "finie" ? " ✓" : statut === "encours" ? " …" : "";
+      puce.textContent =
+        `${g.width}×${g.height} n°${g.id.split("-")[1]}${marque}`;
+      puce.addEventListener("click", async () => {
+        catalogueEl.hidden = true;
+        await chargerGrille(g.id);
+      });
+      conteneur.appendChild(puce);
+    }
+    catalogueContenu.appendChild(conteneur);
+  }
 }
 
 function grilleDuJour(index) {
@@ -512,32 +583,25 @@ async function demarrer() {
     new Date().toLocaleDateString("fr-FR");
   etat.index = await (await fetch("data/index.json")).json();
 
-  const parFormat = new Map();
-  for (const g of etat.index.grids) {
-    const clef = `${g.width} × ${g.height}`;
-    if (!parFormat.has(clef)) parFormat.set(clef, []);
-    parFormat.get(clef).push(g);
-  }
-  for (const [format, grilles] of parFormat) {
-    const groupe = document.createElement("optgroup");
-    groupe.label = format;
-    for (const g of grilles) {
-      const option = document.createElement("option");
-      option.value = g.id;
-      option.textContent = `${g.id} (difficulté ${g.difficulty})`;
-      groupe.appendChild(option);
-    }
-    choixEl.appendChild(groupe);
-  }
-
   const demande = new URL(window.location).searchParams.get("g");
   const id = etat.index.grids.some((g) => g.id === demande)
     ? demande
     : grilleDuJour(etat.index);
-  choixEl.value = id;
   await chargerGrille(id);
 
-  choixEl.addEventListener("change", () => chargerGrille(choixEl.value));
+  btnJour.addEventListener("click", () => {
+    chargerGrille(grilleDuJour(etat.index));
+  });
+  btnCatalogue.addEventListener("click", () => {
+    construireCatalogue();
+    catalogueEl.hidden = false;
+  });
+  catalogueFermer.addEventListener("click", () => {
+    catalogueEl.hidden = true;
+  });
+  catalogueEl.addEventListener("click", (event) => {
+    if (event.target === catalogueEl) catalogueEl.hidden = true;
+  });
   sensBtn.addEventListener("click", () => {
     fixerSens(etat.dir === "h" ? "v" : "h");
     grilleEl.focus({ preventScroll: true });

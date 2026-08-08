@@ -184,6 +184,91 @@ body {
 /* lettre donnée par le bouton Indice */
 .case.lettre.aide { color: #7a86c8; }
 
+/* ligne d'identité de la grille en cours */
+.sous-titre {
+  text-align: center;
+  color: var(--bleu);
+  font-weight: 800;
+  font-style: italic;
+  margin-bottom: 8px;
+  letter-spacing: .03em;
+}
+
+.sous-titre .jour { color: var(--rouge); }
+
+/* ---- catalogue ---- */
+.catalogue-fond {
+  position: fixed;
+  inset: 0;
+  background: rgba(21, 34, 90, .55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  padding: 20px;
+}
+
+.catalogue-panneau {
+  background: var(--blanc);
+  border: 6px solid var(--rouge);
+  border-radius: 6px;
+  max-width: 860px;
+  width: 100%;
+  max-height: 84vh;
+  overflow-y: auto;
+  padding: 14px 18px;
+}
+
+.catalogue-tete {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.catalogue-tete h2 {
+  color: var(--bleu);
+  font-style: italic;
+  letter-spacing: .04em;
+}
+
+.catalogue-section {
+  color: var(--rouge);
+  font-weight: 800;
+  margin: 12px 0 6px;
+  border-bottom: 2px solid var(--rose);
+  padding-bottom: 2px;
+}
+
+.catalogue-grilles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.puce-grille {
+  border: 2px solid var(--bleu);
+  background: var(--blanc);
+  color: var(--bleu);
+  font-weight: 700;
+  font-size: .78rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.puce-grille:hover { background: #eef1fb; }
+
+.puce-grille.encours { border-color: #d98324; color: #d98324; }
+
+.puce-grille.finie {
+  border-color: #1a7f37;
+  color: #1a7f37;
+  background: #e5f6ea;
+}
+
+.puce-grille.active { background: var(--bleu); color: var(--blanc); }
+
 /* bandeau d'état : victoire ou erreurs */
 .bandeau-etat {
   text-align: center;

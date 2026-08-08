@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>NiZZLE Family — Mots Fléchés Foot</title>
-<link rel="stylesheet" href="style.css?v=5">
+<link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
 <div class="rail rail-gauche" aria-hidden="true"></div>
@@ -15,9 +15,8 @@
       <span class="logo-foot">MOTS FLÉCHÉS FOOT</span></h1>
     <div class="bandeau-champs">
       <span class="champ"><b>LE :</b> <span id="date-jour" class="pointille"></span></span>
-      <span class="champ"><b>GRILLE :</b>
-        <select id="choix-grille" aria-label="Choisir une grille"></select>
-      </span>
+      <button id="btn-jour" class="bouton-sens">⭐ Grille du jour</button>
+      <button id="btn-catalogue" class="bouton-sens">Catalogue</button>
       <button id="sens" class="bouton-sens" title="Sens de saisie (clic sur la case sélectionnée pour basculer)">
         Saisie : <span id="sens-libelle">→ horizontal</span>
       </button>
@@ -32,15 +31,25 @@
       </button>
     </div>
   </header>
+  <div id="sous-titre" class="sous-titre"></div>
   <div id="bandeau-etat" class="bandeau-etat" hidden></div>
   <main>
     <div id="grille" class="grille" tabindex="0" aria-label="Grille de mots fléchés"></div>
   </main>
+  <div id="catalogue" class="catalogue-fond" hidden>
+    <div class="catalogue-panneau">
+      <div class="catalogue-tete">
+        <h2>Catalogue des grilles</h2>
+        <button id="catalogue-fermer" class="bouton-sens">Fermer</button>
+      </div>
+      <div id="catalogue-contenu"></div>
+    </div>
+  </div>
   <input id="clavier-mobile" type="text" inputmode="text" autocomplete="off"
          autocorrect="off" autocapitalize="characters" spellcheck="false"
          aria-hidden="true" tabindex="-1">
   <footer class="pied">NiZZLE Family — un jeu maison, thème football</footer>
 </div>
-<script type="module" src="app.js?v=5"></script>
+<script type="module" src="app.js?v=6"></script>
 </body>
 </html>

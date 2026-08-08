@@ -1,0 +1,17 @@
+# Déploiement Netlify : site statique pur, aucun build.
+# Dans l'interface Netlify : importer le dépôt GitHub, tout est lu ici.
+
+[build]
+  publish = "web/public"
+
+# La banque de grilles change rarement : une heure de cache navigateur,
+# et le CDN se rafraîchit à chaque déploiement.
+[[headers]]
+  for = "/data/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+
+[[headers]]
+  for = "/img/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"

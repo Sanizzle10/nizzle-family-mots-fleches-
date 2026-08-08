@@ -527,6 +527,23 @@ const SECTIONS = [
   [3, "Difficiles ⚽⚽⚽"],
 ];
 
+const CATALOGUE_TRANCHE = 60;
+
+function creerPuce(g) {
+  const puce = document.createElement("button");
+  const statut = etatSauvegarde(g.id);
+  puce.className = `puce-grille ${statut}`;
+  if (etat.data && g.id === etat.data.id) puce.classList.add("active");
+  const marque = statut === "finie" ? " ✓" : statut === "encours" ? " …" : "";
+  puce.textContent =
+    `${g.width}×${g.height} n°${g.id.split("-")[1]}${marque}`;
+  puce.addEventListener("click", async () => {
+    catalogueEl.hidden = true;
+    await chargerGrille(g.id);
+  });
+  return puce;
+}
+
 function construireCatalogue() {
   catalogueContenu.innerHTML = "";
   for (const [niveau, titre] of SECTIONS) {
@@ -534,25 +551,32 @@ function construireCatalogue() {
     if (!grilles.length) continue;
     const section = document.createElement("div");
     section.className = "catalogue-section";
-    section.textContent = titre;
+    section.textContent = `${titre} — ${grilles.length} grilles`;
     catalogueContenu.appendChild(section);
     const conteneur = document.createElement("div");
     conteneur.className = "catalogue-grilles";
-    for (const g of grilles) {
-      const puce = document.createElement("button");
-      const statut = etatSauvegarde(g.id);
-      puce.className = `puce-grille ${statut}`;
-      if (etat.data && g.id === etat.data.id) puce.classList.add("active");
-      const marque = statut === "finie" ? " ✓" : statut === "encours" ? " …" : "";
-      puce.textContent =
-        `${g.width}×${g.height} n°${g.id.split("-")[1]}${marque}`;
-      puce.addEventListener("click", async () => {
-        catalogueEl.hidden = true;
-        await chargerGrille(g.id);
-      });
-      conteneur.appendChild(puce);
-    }
+    // Les grilles commencées ou finies d'abord, puis affichage par
+    // tranches : des milliers de puces d'un coup figeraient la page.
+    const triees = [...grilles].sort((a, b) => {
+      const rang = (g) =>
+        ({ encours: 0, finie: 1, "": 2 }[etatSauvegarde(g.id)]);
+      return rang(a) - rang(b);
+    });
+    let visibles = 0;
+    const afficherTranche = () => {
+      for (const g of triees.slice(visibles, visibles + CATALOGUE_TRANCHE)) {
+        conteneur.appendChild(creerPuce(g));
+      }
+      visibles = Math.min(visibles + CATALOGUE_TRANCHE, triees.length);
+      encore.textContent = `Afficher plus (${triees.length - visibles} restantes)`;
+      encore.hidden = visibles >= triees.length;
+    };
+    const encore = document.createElement("button");
+    encore.className = "puce-grille";
+    encore.addEventListener("click", afficherTranche);
+    afficherTranche();
     catalogueContenu.appendChild(conteneur);
+    catalogueContenu.appendChild(encore);
   }
 }
 

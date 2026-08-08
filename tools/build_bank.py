@@ -194,33 +194,47 @@ def collect_format(
     seconds: float,
     seed: int,
     seen_hashes: set[str],
+    surplus: float = 1.25,
 ) -> list[tuple[list[list[str | None]], list[Placement], int]]:
-    """Génère `wanted` grilles pleines, valides et toutes différentes."""
+    """Génère un excédent de grilles pleines, valides et toutes
+    différentes, puis ne garde que les `wanted` mieux notées."""
+    if wanted <= 0:
+        return []
     cells_total = width * height
     cap = PENALTY_CAP.get(cells_total, 60_000)
+    # Sur les grands formats la génération est lente : pas d'excédent.
+    objectif = wanted if cells_total > 200 else max(wanted, int(wanted * surplus))
     kept: list = []
     round_no = 0
-    # Lots larges d'abord (les recherches indépendantes réussissent souvent),
-    # complément grille par grille en parallèle pour les récalcitrantes.
-    while len(kept) < wanted and round_no < 12:
-        missing = wanted - len(kept)
-        batch_size = max(missing, 8) if round_no < 6 else 0
+    tours_secs = 0
+    # Lots de taille bornée : la progression s'affiche régulièrement et un
+    # crash machine ne coûte qu'un tour (relancé avec une autre graine).
+    while len(kept) < objectif and round_no < 80 and tours_secs < 3:
+        missing = objectif - len(kept)
+        batch_size = min(max(missing, 8), 200)
         round_seed = seed + round_no * 100_003
-        if batch_size:
-            results = generate_batch(
-                entries, batch_size, width=width, height=height,
-                seconds=seconds, seed_base=round_seed,
-            )
-        else:
-            results = [
-                generate_best(
-                    entries, width=width, height=height,
-                    seconds=seconds, seed_base=round_seed + i * 7919,
+        avant = len(kept)
+        try:
+            if round_no < 40:
+                results = generate_batch(
+                    entries, batch_size, width=width, height=height,
+                    seconds=seconds, seed_base=round_seed,
                 )
-                for i in range(missing)
-            ]
+            else:
+                results = [
+                    generate_best(
+                        entries, width=width, height=height,
+                        seconds=seconds, seed_base=round_seed + i * 7919,
+                    )
+                    for i in range(min(missing, 24))
+                ]
+        except Exception as exc:
+            print(f"  {width}x{height} : tour {round_no + 1} perdu "
+                  f"({type(exc).__name__}), on relance", flush=True)
+            round_no += 1
+            continue
         for grid, placements, stats in results:
-            if len(kept) >= wanted or not stats.get("complete"):
+            if len(kept) >= objectif or not stats.get("complete"):
                 continue
             digest = hashlib.sha1(
                 "".join(
@@ -236,12 +250,16 @@ def collect_format(
                 continue
             seen_hashes.add(digest)
             kept.append((grid, placements, score.total))
+        tours_secs = tours_secs + 1 if len(kept) == avant else 0
         round_no += 1
         print(
-            f"  {width}x{height} : {len(kept)}/{wanted} après le tour {round_no}",
+            f"  {width}x{height} : {len(kept)}/{objectif} après le tour "
+            f"{round_no}",
             flush=True,
         )
-    return kept
+    # Sélection qualité : pénalité croissante, on garde les meilleures.
+    kept.sort(key=lambda item: item[2])
+    return kept[:wanted]
 
 
 def main() -> None:
@@ -318,7 +336,12 @@ def main() -> None:
                 }
             )
 
-    daily = [item["id"] for item in catalogue]
+    # Grille du jour : format magazine (8 colonnes), jamais « difficile ».
+    daily = [
+        item["id"]
+        for item in catalogue
+        if item["width"] == 8 and item["difficulty"] <= 2
+    ] or [item["id"] for item in catalogue]
     rng.shuffle(daily)
     index = {
         "version": 1,

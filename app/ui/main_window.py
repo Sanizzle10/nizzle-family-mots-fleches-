@@ -4,7 +4,7 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
-from PySide6.QtCore import Qt, QPointF, QRectF, QThread, Signal
+from PySide6.QtCore import Qt, QPointF, QRectF, QThread, QTimer, Signal
 from PySide6.QtGui import (
     QColor,
     QFont,
@@ -32,6 +32,7 @@ from PySide6.QtWidgets import (
 
 import random
 
+from app.definitions import preparer_lexique
 from app.dictionary import load_dictionary
 from app.generator import CLUE_CELL
 from app.parallel import generate_best, worker_count
@@ -47,6 +48,12 @@ BLUE = QColor("#15317E")
 RED = QColor("#EF3340")
 CLUE_BG = QColor("#FDE9E9")
 TEXT_DARK = QColor("#17191F")
+
+# Chargé automatiquement au démarrage : l'app doit afficher une grille
+# sans aucune manipulation.
+DEFAULT_LEXICON = (
+    Path(__file__).resolve().parents[2] / "data" / "lexique_foot_master.csv"
+)
 
 
 class GridWidget(QWidget):
@@ -344,18 +351,33 @@ class MainWindow(QMainWindow):
         self.height_spin.setValue(13)
         header.addWidget(self.height_spin)
 
-        self.generate_button = QPushButton("Générer")
+        root.addLayout(header)
+
+        # Deuxième rangée : les actions. Sur une seule ligne, les derniers
+        # boutons débordaient de la fenêtre sur les écrans moins larges.
+        actions = QHBoxLayout()
+        self.generate_button = QPushButton("Générer une grille")
         self.generate_button.clicked.connect(self.generate)
-        header.addWidget(self.generate_button)
+        actions.addWidget(self.generate_button)
 
         toggle_button = QPushButton("Afficher / masquer réponses")
         toggle_button.clicked.connect(self.toggle_answers)
-        header.addWidget(toggle_button)
+        actions.addWidget(toggle_button)
 
-        pdf_button = QPushButton("Télécharger PDF")
-        pdf_button.clicked.connect(self.export_pdf)
-        header.addWidget(pdf_button)
-        root.addLayout(header)
+        actions.addStretch()
+
+        pdf_vide_button = QPushButton("PDF grille vide")
+        pdf_vide_button.clicked.connect(lambda: self.export_pdf(False))
+        actions.addWidget(pdf_vide_button)
+
+        pdf_solution_button = QPushButton("PDF solution")
+        pdf_solution_button.clicked.connect(lambda: self.export_pdf(True))
+        actions.addWidget(pdf_solution_button)
+
+        pdf_livret_button = QPushButton("PDF grille + solution")
+        pdf_livret_button.clicked.connect(lambda: self.export_pdf(None))
+        actions.addWidget(pdf_livret_button)
+        root.addLayout(actions)
 
         self.illustration_preview = QLabel("Aucune illustration")
         self.illustration_preview.setAlignment(Qt.AlignCenter)
@@ -393,6 +415,25 @@ class MainWindow(QMainWindow):
             """
         )
 
+        self._charger_lexique_defaut()
+
+    def _charger_lexique_defaut(self) -> None:
+        """Charge le lexique maître et lance une première grille : l'app
+        doit montrer quelque chose sans aucune manipulation."""
+        if not DEFAULT_LEXICON.exists():
+            return
+        try:
+            self.entries = preparer_lexique(load_dictionary(DEFAULT_LEXICON))
+        except Exception:
+            return
+        self.refresh_word_list()
+        definitions = sum(len(entry.definitions) for entry in self.entries)
+        self.statusBar().showMessage(
+            f"Lexique chargé ({len(self.entries)} mots, {definitions} "
+            "définitions) — génération de la première grille…"
+        )
+        QTimer.singleShot(150, self.generate)
+
     def choose_illustration(self) -> None:
         path, _ = QFileDialog.getOpenFileName(
             self,
@@ -427,7 +468,7 @@ class MainWindow(QMainWindow):
             return
 
         try:
-            self.entries = load_dictionary(path)
+            self.entries = preparer_lexique(load_dictionary(path))
         except Exception as exc:
             QMessageBox.critical(self, "Erreur d'import", str(exc))
             return
@@ -516,8 +557,9 @@ class MainWindow(QMainWindow):
         self.grid_widget.show_answers = not self.grid_widget.show_answers
         self.grid_widget.update()
 
-    def export_pdf(self) -> None:
-        from app.pdf_exporter import export_book_pdf
+    def export_pdf(self, avec_reponses: bool | None) -> None:
+        """None = livret 2 pages (grille puis solution), sinon une page."""
+        from app.pdf_exporter import export_book_pdf, export_grid_pdf
 
         if not self.grid_widget.grid or not self.placements:
             QMessageBox.information(
@@ -527,10 +569,12 @@ class MainWindow(QMainWindow):
             )
             return
 
+        titre = self.title_edit.text().strip() or "mots-fleches"
+        suffixe = {None: "", True: "-solution", False: "-grille"}[avec_reponses]
         path, _ = QFileDialog.getSaveFileName(
             self,
             "Enregistrer le PDF",
-            f"{self.title_edit.text().strip() or 'mots-fleches'}.pdf",
+            f"{titre}{suffixe}.pdf",
             "PDF (*.pdf)",
         )
         if not path:
@@ -538,13 +582,34 @@ class MainWindow(QMainWindow):
         if not path.lower().endswith(".pdf"):
             path += ".pdf"
 
-        export_book_pdf(
-            path,
-            self.title_edit.text().strip(),
-            self.grid_widget,
-            self.illustration_path,
-        )
-        self.statusBar().showMessage(f"PDF enregistré : {path}")
+        try:
+            if avec_reponses is None:
+                export_book_pdf(
+                    path,
+                    self.title_edit.text().strip(),
+                    self.grid_widget,
+                    self.illustration_path,
+                )
+                message = (
+                    f"PDF enregistré (page 1 : grille, page 2 : solution) : "
+                    f"{path}"
+                )
+            else:
+                titre_page = self.title_edit.text().strip()
+                if avec_reponses:
+                    titre_page = f"{titre_page or 'Mots fléchés'} — Solution"
+                export_grid_pdf(
+                    path,
+                    titre_page,
+                    self.grid_widget,
+                    show_answers=avec_reponses,
+                    illustration_path=self.illustration_path,
+                )
+                message = f"PDF enregistré : {path}"
+        except Exception as exc:
+            QMessageBox.critical(self, "Export PDF impossible", str(exc))
+            return
+        self.statusBar().showMessage(message)
 
 
 def run_app() -> None:

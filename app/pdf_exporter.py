@@ -98,6 +98,36 @@ def _draw_page(
     )
 
 
+def export_grid_pdf(
+    path: str,
+    title: str,
+    grid_widget,
+    show_answers: bool,
+    illustration_path: str = "",
+) -> None:
+    """Une seule page : la grille vide, ou sa solution."""
+    writer = QPdfWriter(path)
+    writer.setPageSize(QPageSize(QPageSize.A4))
+    writer.setPageOrientation(QPageLayout.Portrait)
+    writer.setPageMargins(QMarginsF(0, 0, 0, 0))
+    writer.setResolution(300)
+
+    painter = QPainter(writer)
+    if not painter.isActive():
+        raise RuntimeError("Impossible de créer le document PDF.")
+
+    page = QRectF(0, 0, writer.width(), writer.height())
+    _draw_page(
+        painter,
+        page,
+        title.strip() or "Mots fléchés",
+        grid_widget,
+        show_answers=show_answers,
+        illustration_path=illustration_path,
+    )
+    painter.end()
+
+
 def export_book_pdf(
     path: str,
     title: str,

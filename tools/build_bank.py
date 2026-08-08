@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """Fabrique la banque de grilles JSON de la webapp (V3).
 
 Usage :
@@ -21,7 +21,6 @@ import datetime as dt
 import hashlib
 import json
 import random
-import re
 import sys
 from collections import Counter
 from pathlib import Path
@@ -41,123 +40,11 @@ LEXICON = REPO / "data" / "lexique_foot_master.csv"
 PENALTY_CAP = {104: 13_000, 150: 20_000, 260: 60_000}
 
 
-# « Trois lettres qui... » : redondant à l'écran, la case donne déjà le
-# nombre de lettres. On retire le préfixe et la cheville qui le suit.
-_NOMBRES = (
-    "deux|trois|quatre|cinq|six|sept|huit|neuf|dix|onze|douze|treize"
-    "|quatorze|quinze"
+from app.definitions import (  # noqa: E402
+    appliquer_exclusions,
+    charger_exclusions,
+    nettoyer_definition,
 )
-_PREFIXE_LETTRES = re.compile(
-    rf"^\s*(?:{_NOMBRES})\s+lettres\s*(?:qui\s+|qu[''`]\s*|que\s+|et\s+|,\s*|:\s*)?",
-    re.IGNORECASE,
-)
-
-
-# Ces définitions étaient accordées avec « X lettres » (féminin pluriel) :
-# une fois le préfixe retiré, il faut ré-accorder au mot-réponse (masculin
-# par convention, pluriel si le mot finit par S). Dans le doute, on garde le
-# libellé d'origine : un préfixe vaut mieux qu'une faute.
-_VERBES_IRREGULIERS = {
-    "viennent": "vient", "reviennent": "revient", "deviennent": "devient",
-    "tiennent": "tient", "retiennent": "retient", "servent": "sert",
-    "sortent": "sort", "partent": "part", "sentent": "sent",
-    "mentent": "ment", "battent": "bat", "mettent": "met",
-    "permettent": "permet", "font": "fait", "vont": "va", "sont": "est",
-    "ont": "a", "peuvent": "peut", "veulent": "veut", "doivent": "doit",
-    "savent": "sait", "voient": "voit", "croient": "croit",
-    "prennent": "prend", "apprennent": "apprend",
-    "comprennent": "comprend", "perdent": "perd", "rendent": "rend",
-    "vendent": "vend", "attendent": "attend", "descendent": "descend",
-    "repondent": "répond", "répondent": "répond", "entendent": "entend",
-    "defendent": "défend", "défendent": "défend", "courent": "court",
-    "meurent": "meurt", "suivent": "suit", "vivent": "vit",
-    "dorment": "dort", "ecrivent": "écrit", "écrivent": "écrit",
-    "decrivent": "décrit", "décrivent": "décrit", "disent": "dit",
-    "lisent": "lit", "conduisent": "conduit", "produisent": "produit",
-    "traduisent": "traduit", "construisent": "construit",
-    "plaisent": "plaît", "connaissent": "connaît",
-    "paraissent": "paraît", "naissent": "naît", "recoivent": "reçoit",
-    "reçoivent": "reçoit", "boivent": "boit", "envoient": "envoie",
-    "essaient": "essaie", "paient": "paie", "emploient": "emploie",
-    "appellent": "appelle", "jettent": "jette", "achetent": "achète",
-    "achètent": "achète", "esperent": "espère", "espèrent": "espère",
-    "precedent": "précède", "précèdent": "précède",
-    "possedent": "possède", "possèdent": "possède", "rient": "rit",
-    "fuient": "fuit",
-}
-
-
-def _singulier_verbe(mot: str) -> str | None:
-    if mot in _VERBES_IRREGULIERS:
-        return _VERBES_IRREGULIERS[mot]
-    if mot.endswith("issent"):
-        return mot[:-6] + "it"
-    if mot.endswith("ent") and len(mot) > 4:
-        return mot[:-3] + "e"  # 1er groupe : jouent -> joue
-    return None
-
-
-def _accorder(mot: str, pluriel: bool) -> str | None:
-    """Ré-accorde un premier mot marqué au féminin pluriel ; None = on ne
-    sait pas faire proprement."""
-    if mot.endswith("ées"):
-        return mot[:-3] + ("és" if pluriel else "é")
-    if mot.endswith("ée"):
-        return mot[:-2] + "é"
-    if mot.endswith("és"):
-        return mot if pluriel else mot[:-1]
-    if mot.endswith("aient"):
-        return mot if pluriel else mot[:-5] + "ait"  # imparfait
-    if mot.endswith("ent"):
-        return mot if pluriel else _singulier_verbe(mot)
-    if mot.endswith("s"):
-        # rouges, bourguignonnes, mises, suivies... : la mise au masculin
-        # singulier d'un adjectif est trop incertaine
-        return None
-    return mot  # aucune marque d'accord
-
-
-# Noms communs en -ées/-ues/-ies : leur présence dans la suite de la
-# définition n'est PAS un accord avec « lettres ».
-_NOMS_ANODINS = {
-    "années", "journées", "soirées", "idées", "allées", "arrivées",
-    "montées", "remontées", "échappées", "chevauchées", "percées",
-    "tournées", "vues", "revues", "issues", "recrues", "statues",
-    "banlieues", "lieues", "rues", "tribunes", "parties", "séries",
-    "sorties", "demies", "pénalties", "manies", "écuries",
-}
-
-
-def nettoyer_definition(text: str, word: str = "") -> str:
-    reste = _PREFIXE_LETTRES.sub("", text, count=1).strip()
-    if not reste or reste == text:
-        return text
-    pluriel = bool(word) and word.endswith("S")
-    mots = reste.split(" ")
-    cible = 0
-    if mots[0].lower() in ("se", "s'") and len(mots) > 1:
-        cible = 1  # « se creusent » : l'accord porte sur le verbe
-    accorde = _accorder(mots[cible].lower(), pluriel)
-    if accorde is None:
-        return text  # on garde le libellé d'origine plutôt qu'une faute
-    # Un accord en chaîne plus loin dans la phrase (« devenues
-    # londoniennes ») ? Trop risqué : libellé d'origine. Un mot précédé
-    # d'un article est un nom, pas un accord.
-    _ARTICLES = {
-        "le", "la", "les", "des", "du", "un", "une", "ses", "leurs",
-        "aux", "quelques", "plusieurs", "bien",
-    }
-    for i in range(cible + 1, len(mots)):
-        bas = mots[i].lower().strip(",.()'")
-        if not bas.endswith(("ées", "ues", "ies")) or bas in _NOMS_ANODINS:
-            continue
-        if mots[i - 1].lower().strip(",.()'") in _ARTICLES:
-            continue
-        return text
-    mots[cible] = accorde
-    reste = " ".join(mots)
-    return reste[0].upper() + reste[1:]
-
 
 def parse_mix(text: str) -> list[tuple[int, int, int]]:
     """"8x13:150,10x15:35" -> [(8, 13, 150), (10, 15, 35)]."""
@@ -369,23 +256,48 @@ def main() -> None:
     grids_dir = out / "grilles"
     grids_dir.mkdir(parents=True, exist_ok=True)
 
-    entries = load_dictionary(LEXICON)
+    charge = load_dictionary(LEXICON)
+    defs_avant = sum(len(e.definitions) for e in charge)
+    entries = appliquer_exclusions(charge)
+    print(f"Exclusions : "
+          f"{defs_avant - sum(len(e.definitions) for e in entries)} "
+          f"définitions écartées, {len(charge) - len(entries)} mots sans "
+          "définition restante")
+    # Grilles faciles : uniquement des mots ayant une définition niveau 1
+    # (joueurs, équipes et termes connus).
+    connus = [e for e in entries if any(d.level == 1 for d in e.definitions)]
     by_word = {entry.word: entry for entry in entries}
     rng = random.Random(args.seed)
     usage: Counter = Counter()
     seen_hashes: set[str] = set()
+    part_facile = CIBLES_NIVEAU.count(1) / len(CIBLES_NIVEAU)
+    cycle_dur = [c for c in CIBLES_NIVEAU if c != 1]
 
     catalogue = []
     for width, height, wanted in parse_mix(args.mix):
         lengths = WordIndex(entries, max(width, height)).lengths
-        print(f"Format {width}x{height} : objectif {wanted}", flush=True)
-        produced = collect_format(
-            entries, lengths, width, height, wanted,
+        lengths_connus = WordIndex(connus, max(width, height)).lengths
+        objectif_facile = round(wanted * part_facile)
+        print(f"Format {width}x{height} : objectif {wanted} "
+              f"(dont {objectif_facile} faciles)", flush=True)
+        faciles = collect_format(
+            connus, lengths_connus, width, height, objectif_facile,
             args.seconds, args.seed + width * 31 + height, seen_hashes,
         )
-        for seq, (grid, placements, penalty) in enumerate(produced, start=1):
+        # Si les mots connus ne suffisent pas (grands formats), le manque
+        # est produit avec le dictionnaire complet, en difficulté 2.
+        durs = collect_format(
+            entries, lengths, width, height, wanted - len(faciles),
+            args.seconds, args.seed + width * 131 + height, seen_hashes,
+        )
+        produced = [(g, p, pen, 1) for g, p, pen in faciles] + [
+            (g, p, pen, cycle_dur[i % len(cycle_dur)])
+            for i, (g, p, pen) in enumerate(durs)
+        ]
+        for seq, (grid, placements, penalty, cible) in enumerate(
+            produced, start=1
+        ):
             grid_id = f"{width}x{height}-{seq:03d}"
-            cible = CIBLES_NIVEAU[(seq - 1) % len(CIBLES_NIVEAU)]
             chosen = pick_definitions(placements, by_word, usage, rng, cible)
             data = grid_to_json(
                 grid_id, grid, placements, chosen, penalty, cible
